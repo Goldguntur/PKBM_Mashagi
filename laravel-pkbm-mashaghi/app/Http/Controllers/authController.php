@@ -23,7 +23,7 @@ public function register(Request $request)
              'regex:/^(?:\+62|62|0)8[1-9][0-9]{7,10}$/',
              'unique:users',
             ],
-        'nisn' => 'required|string|max:20|unique:users',
+        'nisn' => 'string|max:20|unique:users',
         'password' => 'required|string|min:8|confirmed',
         'role' => 'required|in:kepalaSekolah,tenagaPendidik,guru,pesertaDidik', 
     ]; 
@@ -50,7 +50,7 @@ public function register(Request $request)
         return response()->json([
             'status' => 'success',
             'message' => 'User registered successfully',
-            'data' => $dataUser,
+            'data' => $dataUser
         ], 201);
     } catch (Exception $e) {
         return response()->json([
@@ -63,6 +63,7 @@ public function login(Request $request) {
     $rules = [
         'email' => 'required|email',
         'password' => 'required|string|min:8',
+        'role' => 'required|in:kepalaSekolah,tenagaPendidik,guru,pesertaDidik',
     ];
 
     $validator = Validator::make($request->all(), $rules);
@@ -80,6 +81,12 @@ public function login(Request $request) {
             'message' => 'Email atau password salah',
         ], 401);
     }
+    if (Auth::user()->role !== $request->role) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Role tidak sesuai',
+        ], 403);
+    }
 
     $dataUser = User::where('email', $request->email)->first();
     return response()->json([
@@ -89,6 +96,7 @@ public function login(Request $request) {
         'user' => [
             'id' => $dataUser->id,
             'username' => $dataUser->username,
+            'name' => $dataUser->name,
             'email' => $dataUser->email,
             'role' => $dataUser->role,
         ],
