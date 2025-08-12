@@ -24,6 +24,7 @@ public function register(Request $request)
              'unique:users',
             ],
         'nisn' => 'string|max:20|unique:users',
+        'nisn' => 'string|max:20|unique:users',
         'password' => 'required|string|min:8|confirmed',
         'role' => 'required|in:kepalaSekolah,tenagaPendidik,guru,pesertaDidik', 
     ]; 
@@ -43,6 +44,7 @@ public function register(Request $request)
         $dataUser->email = $request->email;
         $dataUser->no_wa = $request->no_wa;
         $dataUser->nisn = $request->nisn;
+        $dataUser->nik = $request->nik;
         $dataUser->password = Hash::make($request->password);
         $dataUser->role = $request->role;
         $dataUser->save();

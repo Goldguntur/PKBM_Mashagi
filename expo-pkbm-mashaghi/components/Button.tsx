@@ -1,24 +1,27 @@
-import { forwardRef } from 'react';
-import { Text, TouchableOpacity, TouchableOpacityProps, View } from 'react-native';
+import { View, Text, Pressable } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 
-type ButtonProps = {
-  title: string;
-} & TouchableOpacityProps;
+// Button.tsx
+interface ExploreButtonProps {
+  handlePress?: (event: any) => void; // fungsi, bukan string
+}
 
-export const Button = forwardRef<View, ButtonProps>(({ title, ...touchableProps }, ref) => {
+export default function ExploreButton({ handlePress }: ExploreButtonProps) {
   return (
-    <TouchableOpacity
-      ref={ref}
-      {...touchableProps}
-      className={`${styles.button} ${touchableProps.className}`}>
-      <Text className={styles.buttonText}>{title}</Text>
-    </TouchableOpacity>
+    <View className="flex mt-3 justify-center items-center">
+      <Pressable
+        onPress={handlePress} 
+        className="flex-row items-center gap-2 px-2 py-2 rounded-xl border-1 bg-blue-400"
+      >
+        <Text className="text-base font-semibold text-white">Explore</Text>
+        <Ionicons
+          name="arrow-up"
+          size={18}
+          color="#fff"
+          style={{ transform: [{ rotate: "45deg" }] }}
+        />
+      </Pressable>
+    </View>
   );
-});
-
-Button.displayName = 'Button';
-
-const styles = {
-  button: 'items-center bg-indigo-500 rounded-[28px] shadow-md p-4',
-  buttonText: 'text-white text-lg font-semibold text-center',
-};
+}

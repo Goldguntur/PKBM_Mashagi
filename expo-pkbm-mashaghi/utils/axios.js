@@ -2,7 +2,7 @@ import axios from "axios";
 import { getUserToken } from "~/lib/auth/authStorage";
 
 const instance = axios.create({
-  baseURL: "https://90d1ca8a7d54.ngrok-free.app/api"
+  baseURL: "https://49e2a2600304.ngrok-free.app/api"
 });
 
 instance.interceptors.request.use(async (config) => {

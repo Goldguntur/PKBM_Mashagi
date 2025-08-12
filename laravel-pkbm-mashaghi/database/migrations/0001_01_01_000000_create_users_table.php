@@ -19,6 +19,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('no_wa')->unique();
             $table->string('nisn')->nullable();
+            $table->string('nik')->nullable();
             $table->string('password');
             $table->enum('role', ['kepalaSekolah', 'tenagaPendidik', 'guru', 'pesertaDidik'])->default('pesertaDidik');
             $table->rememberToken();

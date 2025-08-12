@@ -25,6 +25,7 @@ const _Layout = () => {
         name="notif"
         options={{
           title: "Notifications",
+          tabBarBadge: 4,
           tabBarIcon: ({ color }) => (
             <FontAwesome name="bell" size={24} color={color} />
           ),

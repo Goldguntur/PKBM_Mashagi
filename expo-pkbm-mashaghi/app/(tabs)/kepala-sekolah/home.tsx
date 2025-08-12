@@ -1,9 +1,10 @@
-// app/kepala-sekolah/home.tsx
 import React, { useEffect, useState } from "react";
 import { View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
 import { getUser } from "~/lib/auth/authStorage";
 import { useRouter } from "expo-router";
 import type { User } from "~/lib/auth/authStorage";
+import Card from "@/components/CustomCard";
+import { Button } from "react-native";
 
 const KepalaSekolahHome = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -13,7 +14,6 @@ const KepalaSekolahHome = () => {
     const loadUser = async () => {
       const u = await getUser();
 
-      // Debug user data
       console.log("Loaded user from storage:", u);
 
       if (u && u.name && u.role) {
@@ -26,39 +26,40 @@ const KepalaSekolahHome = () => {
   }, []);
 
   const cards = [
-    { title: "Absensi Guru", route: "/kepala-sekolah/absensi-guru" },
-    { title: "Absensi Tenaga Pendidik", route: "/kepala-sekolah/absensi-tenaga" },
-    { title: "Registrasi", route: "/kepala-sekolah/register" },
-    { title: "Pengumuman", route: "/kepala-sekolah/pengumuman" },
-    { title: "Mutasi", route: "/kepala-sekolah/mutasi" },
+    { title: "Absensi", description: "Absensi Guru Dan Tenaga Pendidik", route: "/kepsek_pages/Absensi", imgUrl: () => require("@/assets/images/absen.jpeg") },
+    { title: "Registrasi", description: "Registerasi Tenaga Pendidik, Guru, Dan Peserta", route: "../../auth/register", imgUrl: () => require("@/assets/images/register.jpg") },
+    { title: "Pengumuman", description: "Pembuatan pengumuman", route: "/kepsek_pages/Notif", imgUrl: () => require("@/assets/images/anouncement.jpg") },
+    { title: "Mutasi", description: "Pengolahan Mutasi Pendidik Dan Peserta didik", route: "/kepsek_pages/Mutasi", imgUrl: () => require("@/assets/images/mutasi.jpg") },
   ];
 
   return (
     <ScrollView className="flex-1 bg-white p-4">
-      <View className="flex-row items-center mb-6">
+      <View className="flex-row items-center mb-6 mt-4">
         <Image
-          source={require("../../../assets/pfp.jpg")}
+          source={require("../../../assets/pfp.png")}
           className="w-14 h-14 rounded-full mr-4"
         />
         <View>
-          <Text className="text-lg font-semibold">{user?.name ?? "Nama User"}</Text>
-          <Text className="text-sm text-gray-500 capitalize">
+          <Text className="text-xl font-bold">{user?.name ?? "Nama User"}</Text>
+          <Text className="mx-[0.4px] text-sm text-gray-500 capitalize">
             {user?.role?.replace(/([A-Z])/g, " $1").toLowerCase() ?? "kepala sekolah"}
           </Text>
         </View>
       </View>
-
-      <View className="flex-row flex-wrap justify-between">
-        {cards.map((card, idx) => (
-          <TouchableOpacity
-            key={idx}
-            onPress={() => router.push('/')}
-            className="w-[48%] bg-blue-100 p-4 rounded-xl mb-4"
-          >
-            <Text className="text-base font-semibold text-blue-900">{card.title}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+       
+       
+<View className="items-center pt-12">
+  {cards.map((val) => (
+    <Card
+      key={val.title}
+      title={val.title}
+      description={val.description}
+      link={val.route}
+      imageUrl={val.imgUrl}
+      onPress={() => router.push(val.route as any)} 
+    />
+  ))}
+</View>     
     </ScrollView>
   );
 };
