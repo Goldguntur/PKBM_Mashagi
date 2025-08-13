@@ -19,3 +19,12 @@ export async function login(email, password, role) {
     throw new Error(error.response?.data?.message || "Login failed");
   }
 }
+
+export async function register() {
+  try {
+    const response = await axios.post("/register", {});
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "Registration failed");
+  }
+}

@@ -26,17 +26,17 @@ const KepalaSekolahHome = () => {
   }, []);
 
   const cards = [
-    { title: "Absensi", description: "Absensi Guru Dan Tenaga Pendidik", route: "/kepsek_pages/Absensi", imgUrl: () => require("@/assets/images/absen.jpeg") },
-    { title: "Registrasi", description: "Registerasi Tenaga Pendidik, Guru, Dan Peserta", route: "../../auth/register", imgUrl: () => require("@/assets/images/register.jpg") },
-    { title: "Pengumuman", description: "Pembuatan pengumuman", route: "/kepsek_pages/Notif", imgUrl: () => require("@/assets/images/anouncement.jpg") },
-    { title: "Mutasi", description: "Pengolahan Mutasi Pendidik Dan Peserta didik", route: "/kepsek_pages/Mutasi", imgUrl: () => require("@/assets/images/mutasi.jpg") },
+    { title: "Absensi", description: "Absensi Guru Dan Tenaga Pendidik", route: "../(pages)/Absensi", imgUrl: () => require("@/assets/images/absen.jpeg") },
+    { title: "Registrasi", description: "Registerasi Tenaga Pendidik, Guru, Dan Peserta", route: "../../../(auth)/register", imgUrl: () => require("@/assets/images/register.jpg") },
+    { title: "Pengumuman", description: "Pembuatan pengumuman", route: "../(pages)/Notif", imgUrl: () => require("@/assets/images/anouncement.jpg") },
+    { title: "Mutasi", description: "Pengolahan Mutasi Pendidik Dan Peserta didik", route: "../(pages)/Mutasi", imgUrl: () => require("@/assets/images/mutasi.jpg") },
   ];
 
   return (
     <ScrollView className="flex-1 bg-white p-4">
       <View className="flex-row items-center mb-6 mt-4">
         <Image
-          source={require("../../../assets/pfp.png")}
+          source={require("@/assets/pfp.png")}
           className="w-14 h-14 rounded-full mr-4"
         />
         <View>

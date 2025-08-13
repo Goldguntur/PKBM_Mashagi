@@ -27,7 +27,7 @@ export default function Login() {
 
         if (token && role) {
           if (role === "kepalaSekolah") {
-            router.replace("../kepala-sekolah/home");
+            router.replace("../(tabs)/kepala-sekolah/(tabs)/home");
           } else if (role === "guru") {
             router.replace("../guru/home");
           } else if (role === "pesertaDidik") {
