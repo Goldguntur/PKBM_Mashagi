@@ -41,7 +41,7 @@ const CustomTabBar = ({ navigationState, jumpTo, activeColor, inactiveColor }: C
             >
               <Text
                 style={{
-                  color: focused ? activeColor : inactiveColor, // << ganti warna judul tab di sini
+                  color: focused ? activeColor : inactiveColor, 
                   fontWeight: focused ? "700" : "500",
                   fontSize: 16,
                 }}
