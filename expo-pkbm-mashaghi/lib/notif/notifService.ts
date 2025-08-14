@@ -1,7 +1,10 @@
 // ~/lib/notif/notifService.ts
+import { axiosUrl } from "@/utils/axios";
 import { storeNotif, getNotif as getStoredNotif, Notification } from "./notifStorage";
 
-const API_URL = "https://3cb598490aa2.ngrok-free.app/api/pengumuman";
+const API_URL = axiosUrl + "/pengumuman";
+
+console.log("API URL:", API_URL);
 
 export async function fetchNotif(reset: boolean = false): Promise<{ list: Notification[]; unread: number }> {
   try {

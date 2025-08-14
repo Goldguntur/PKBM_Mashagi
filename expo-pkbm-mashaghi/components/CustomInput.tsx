@@ -8,7 +8,8 @@ interface CustomInputProps {
   value: string;
   placeholder: string;
   color?: string;
-  handleChangeText: (text: string) => void;
+  phoneNumber?: boolean;  
+  handleChangeText?: (text: string) => void;
   [props: string]: any;
 }
 
@@ -18,6 +19,7 @@ const CustomInput = ({
   placeholder,
   color,
   handleChangeText,
+  phoneNumber,
   ...props
 }: CustomInputProps) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -40,11 +42,12 @@ const CustomInput = ({
           placeholder={placeholder}
           placeholderTextColor="#A9A9A9"
           onChangeText={handleChangeText}
-          secureTextEntry={title === "Password" && !showPassword}
+          {...phoneNumber && { keyboardType: "phone-pad" }}
+          secureTextEntry={(title === "Password" || title === "Confirm Password") && !showPassword}
           {...props}
         />
 
-        {title === "Password" && (
+        {(title === "Password" || title === "Confirm Password") && (
           <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
             <Entypo
               name={showPassword ? "eye" : "eye-with-line"}

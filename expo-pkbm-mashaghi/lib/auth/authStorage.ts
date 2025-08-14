@@ -16,6 +16,13 @@ export async function saveTokenAndUser(token: string, user: User) {
   }
 }
 
+export async function saveUser(user: User) {
+  await SecureStore.setItemAsync("user", JSON.stringify(user));
+  if (user?.role) {
+    await SecureStore.setItemAsync("role", user.role);
+  }
+}
+
 export async function getUser(): Promise<User | null> {
   const user = await SecureStore.getItemAsync("user");
   return user ? (JSON.parse(user) as User) : null;

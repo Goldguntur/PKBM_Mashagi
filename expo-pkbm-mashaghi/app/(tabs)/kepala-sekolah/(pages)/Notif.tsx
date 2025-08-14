@@ -2,12 +2,17 @@ import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import axios from "~/utils/axios";
+import { AntDesign } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 
 export default function FormPengumuman() {
   const [judul, setJudul] = useState("");
   const [deskripsi, setDeskripsi] = useState("");
   const [tanggal, setTanggal] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
+
+  const router = useRouter();
+
 
   const handleSubmit = async () => {
     if (!judul || !deskripsi) {
@@ -39,7 +44,13 @@ export default function FormPengumuman() {
   };
 
   return (
-    <View className="flex-1 bg-white p-4">
+    <View className="bg-white h-full">
+      <View className="flex-row items-center mt-4 p-4">
+        <TouchableOpacity onPress={() => router.back()}>
+          <AntDesign name="arrowleft" size={24} color="black" />
+        </TouchableOpacity>   
+      </View>
+    <View className=" bg-white p-4">
       <Text className="text-lg font-bold mt-2">Judul Pengumuman</Text>
       <TextInput
         className="border border-gray-300 rounded-lg p-2 mt-1"
@@ -86,5 +97,7 @@ export default function FormPengumuman() {
         </Text>
       </TouchableOpacity>
     </View>
+    </View>
+
   );
 }

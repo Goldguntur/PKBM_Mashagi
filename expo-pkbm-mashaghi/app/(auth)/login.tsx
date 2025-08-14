@@ -37,7 +37,7 @@ export default function Login() {
           }
         }
       } catch (error) {
-        console.error("Error checking login status:", error);
+        Alert.alert("Error", "Error checking login status");
       }
     };
 
@@ -62,7 +62,7 @@ export default function Login() {
     setLoading(true);
     try {
       const user = await login(email, password, role);
-
+      console.log(email, password, role, user);
       if (user.role === "kepalaSekolah") {
         router.replace("../kepala-sekolah/home");
       } else if (user.role === "guru") {

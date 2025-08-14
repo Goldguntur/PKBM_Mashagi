@@ -18,3 +18,11 @@ Route::post('/login', [authController::class, 'login']);
 
 Route::get('/pengumuman', [PengumumanController::class, 'index']);
 Route::post('/pengumuman', [PengumumanController::class, 'store']);
+
+Route::middleware((['auth:sanctum']))->group(function () {
+    Route::post('/logout', [authController::class, 'logout']);
+});
+
+Route::middleware(['auth:sanctum', 'role:pesertaDidik'])->get('/kelas', function () {
+    return \App\Models\Kelas::all();
+});

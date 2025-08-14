@@ -7,61 +7,77 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
-use Exception;
 class authController extends Controller
 {
 
-public function register(Request $request)
-{
-    $rules = [
-        'username' => 'required|string|max:255|unique:users',
-         'name' => 'required|string|max:255',
-         'email' => 'required|string|email|max:255|unique:users',
-         'no_wa' => [
-             'required',
-             'regex:/^(?:\+62|62|0)8[1-9][0-9]{7,10}$/',
-             'unique:users',
+  public function register(Request $request)
+    {
+        $kelasEnum = [
+            'paketA_faseA',
+            'paketA_faseB',
+            'paketA_faseC',
+            'paketB_kelas7',
+            'paketB_kelas8',
+            'paketB_kelas9',
+            'paketC_kelas10',
+            'paketC_kelas11',
+            'paketC_kelas12'
+        ];
+
+        $validator = Validator::make($request->all(), [
+            'username' => 'required|string|max:255|unique:users',
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'no_wa' => [
+                'required',
+                'regex:/^(?:\+62|62|0)8[1-9][0-9]{7,10}$/',
+                'unique:users',
             ],
-        'nisn' => 'string|max:20|unique:users',
-        'nisn' => 'string|max:20|unique:users',
-        'password' => 'required|string|min:8|confirmed',
-        'role' => 'required|in:kepalaSekolah,tenagaPendidik,guru,pesertaDidik', 
-    ]; 
-    $validator = Validator::make($request->all(), $rules);
+            'nisn' => 'nullable|string|max:20|unique:users',
+            'nik' => 'nullable|string|max:20|unique:users',
+            'kelas' => [
+                'nullable',
+                Rule::in($kelasEnum)
+            ],
+            'tanggal_lahir' => 'nullable|date',
+            'password' => 'required|string|min:8|confirmed',
+            'role' => ['required', Rule::in(['kepalaSekolah', 'tenagaPendidik', 'guru', 'pesertaDidik'])],
+        ]);
 
-    if ($validator->fails()) {
-        return response()->json([
-            'status' => 'error',
-            'message' => $validator->errors(),
-        ], 422);
-    }
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $validator->errors(),
+            ], 422);
+        }
 
-    try {
-        $dataUser = new User();
-        $dataUser->username = $request->username;
-        $dataUser->name = $request->name;
-        $dataUser->email = $request->email;
-        $dataUser->no_wa = $request->no_wa;
-        $dataUser->nisn = $request->nisn;
-        $dataUser->nik = $request->nik;
-        $dataUser->password = Hash::make($request->password);
-        $dataUser->role = $request->role;
-        $dataUser->save();
+        if ($request->role !== 'pesertaDidik') {
+            $request->merge(['kelas' => null]);
+        }
+
+        $user = User::create([
+            'username' => $request->username,
+            'name' => $request->name,
+            'email' => $request->email,
+            'no_wa' => $request->no_wa,
+            'nisn' => $request->nisn,
+            'nik' => $request->nik,
+            'kelas' => $request->kelas,
+            'tanggal_lahir' => $request->tanggal_lahir,
+            'password' => Hash::make($request->password),
+            'role' => $request->role,
+        ]);
 
         return response()->json([
             'status' => 'success',
             'message' => 'User registered successfully',
-            'data' => $dataUser
+            'data' => $user
         ], 201);
-    } catch (Exception $e) {
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Server error: ' . $e->getMessage(),
-        ], 500);
     }
-}
-public function login(Request $request) {
+
+    public function login(Request $request) {
     $rules = [
         'email' => 'required|email',
         'password' => 'required|string|min:8',
@@ -95,13 +111,18 @@ public function login(Request $request) {
         'status' => true,
         'message' => 'Login berhasil',
         'token' => $dataUser->createToken('auth-token')->plainTextToken,
-        'user' => [
+        'user' =>  [
             'id' => $dataUser->id,
-            'username' => $dataUser->username,
             'name' => $dataUser->name,
-            'email' => $dataUser->email,
+            'username' => $dataUser->username,
             'role' => $dataUser->role,
-        ],
+            'email' => $dataUser->email,
+            'no_wa' => $dataUser->no_wa,
+            'nisn' => $dataUser->nisn,
+            'nik' => $dataUser->nik,
+            'kelas' => $dataUser->kelas,
+            'tanggal_lahir' => $dataUser->tanggal_lahir
+        ]
     ]);
     }
 
