@@ -5,6 +5,13 @@ export type User = {
   id: string;
   email: string;
   name: string;
+  nisn?: string;
+  nik?: string;
+  no_wa: any;
+  kelas: string;
+  tanggal_lahir?: any;
+  username: string;
+  password?: string;
   role: "kepalaSekolah" | "guru" | "pesertaDidik" | "tenagaPendidik";
 };
 

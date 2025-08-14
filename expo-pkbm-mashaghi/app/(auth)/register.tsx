@@ -243,7 +243,6 @@ export default function Register() {
             </>
           )}
 
-          {/* Button */}
           <TouchableOpacity
             className={`bg-white rounded p-2 ${loading ? "opacity-50" : ""}`}
             onPress={handleRegister}

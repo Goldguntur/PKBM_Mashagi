@@ -1,12 +1,13 @@
 import axios from "~/utils/axios";
 import { saveTokenAndUser, saveUser } from "./authStorage";
 
-export async function login(email, password, role) {
+export async function login(email, password, role, kelas) {
   try {
     const response = await axios.post("/login", {
       email,
       password,
       role,
+      kelas
     });
 
     console.log("Login response:", response.data);

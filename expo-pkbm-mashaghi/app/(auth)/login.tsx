@@ -10,6 +10,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("pesertaDidik");
+  const [kelas, setKelas] = useState("");
   const [loading, setLoading] = useState(false);
 
   const roles = [
@@ -18,6 +19,19 @@ export default function Login() {
     { value: "tenagaPendidik", label: "Tenaga Pendidik" },
     { value: "kepalaSekolah", label: "Kepala Sekolah" },
   ];
+
+  const kelasList = [
+    { value: "paketA_faseA", label: "Paket A Fase A" },
+    { value: "paketA_faseB", label: "Paket A Fase B" },
+    { value: "paketA_faseC", label: "Paket A Fase C" },
+    { value: "paketB_kelas7", label: "Paket B Kelas 7" },
+    { value: "paketB_kelas8", label: "Paket B Kelas 8" },
+    { value: "paketB_kelas9", label: "Paket B Kelas 9" },
+    { value: "paketC_kelas10", label: "Paket C Kelas 10" },
+    { value: "paketC_kelas11", label: "Paket C Kelas 11" },
+    { value: "paketC_kelas12", label: "Paket C Kelas 12" },
+  ];
+
 
   useEffect(() => {
     const checkLoginStatus = async () => {
@@ -61,7 +75,7 @@ export default function Login() {
 
     setLoading(true);
     try {
-      const user = await login(email, password, role);
+      const user = await login(email, password, role, kelas);
       console.log(email, password, role, user);
       if (user.role === "kepalaSekolah") {
         router.replace("../kepala-sekolah/home");
@@ -116,6 +130,32 @@ export default function Login() {
             ))}
           </Picker>
         </View>
+
+        {role === "pesertaDidik" && (
+                    <>
+                      <Text className="text-white mb-1">Kelas</Text>
+                      <View className="bg-white rounded mb-4 overflow-hidden">
+                        <Picker
+                          selectedValue={kelas}
+                          onValueChange={(val) => setKelas(val)}
+                          style={{
+                            backgroundColor: "#e3f2fd",
+                            color: "#1565c0",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          <Picker.Item label="Pilih Kelas" value="" />
+                          {kelasList.map((k) => (
+                            <Picker.Item
+                              key={k.value}
+                              label={k.label}
+                              value={k.value}
+                            />
+                          ))}
+                        </Picker>
+                      </View>
+                    </>
+                  )}
 
         <TouchableOpacity
           className={`bg-white rounded p-2 ${loading ? "opacity-50" : ""}`}

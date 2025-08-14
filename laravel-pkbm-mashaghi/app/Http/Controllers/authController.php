@@ -82,6 +82,7 @@ class authController extends Controller
         'email' => 'required|email',
         'password' => 'required|string|min:8',
         'role' => 'required|in:kepalaSekolah,tenagaPendidik,guru,pesertaDidik',
+        'kelas' => 'nullable|in:paketA_faseA,paketA_faseB,paketA_faseC,paketB_kelas7,paketB_kelas8,paketB_kelas9,paketC_kelas10,paketC_kelas11,paketC_kelas12',
     ];
 
     $validator = Validator::make($request->all(), $rules);
