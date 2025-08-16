@@ -102,9 +102,9 @@ export default function ProfileScreen() {
 
         <View className="flex-row items-center border-b border-gray-200 pb-2">
           <Feather name="credit-card" size={20} color="#3B82F6" />
-          <Text className="ml-3 text-gray-700 capitalize">Nik:</Text>
+          <Text className="ml-3 text-gray-700 capitalize">Nisn:</Text>
           <TextInput
-            value={user?.nik || ""}
+            value={user?.nisn || ""}
             className="ml-1 capitalize flex-1 text-zinc-500 text-sm"
             editable={false}
           />
