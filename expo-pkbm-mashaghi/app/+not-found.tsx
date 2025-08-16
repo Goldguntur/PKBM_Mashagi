@@ -1,10 +1,14 @@
-import { Link, Stack } from 'expo-router';
+import { Link, router, Stack } from 'expo-router';
+import { useEffect } from 'react';
 
 import { Text } from 'react-native';
 
 import { Container } from '~/components/Container';
 
 export default function NotFoundScreen() {
+  useEffect(() => {
+    router.replace('/(auth)/login');
+  })
   return (
     <>
       <Stack.Screen options={{ title: 'Oops!' }} />

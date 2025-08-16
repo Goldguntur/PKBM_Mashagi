@@ -1,4 +1,3 @@
-// ~/lib/auth/authStorage.ts
 import * as SecureStore from "expo-secure-store";
 
 export type User = {

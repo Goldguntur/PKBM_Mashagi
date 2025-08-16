@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TextInput, ScrollView, Image } from "react-native";
+import { View, Text, TextInput, ScrollView, Image, Pressable, Alert } from "react-native";
 import { Ionicons, MaterialIcons, Feather } from "@expo/vector-icons";
-import { getUser, User } from "@/lib/auth/authStorage";
+import { getUser, logout, User } from "@/lib/auth/authStorage";
+import { useRouter } from "expo-router";
+
 
 export default function ProfileScreen() {
+
+  const router = useRouter()
+
   const [user, setUser] = useState<User | null>(null);
 
   const formatDate = (dateStr: string) => {
@@ -18,6 +23,7 @@ export default function ProfileScreen() {
     const year = date.getFullYear();
     return `${day} ${month} ${year}`;
   };
+  
 
   useEffect(() => {
     const loadUser = async () => {
@@ -120,6 +126,29 @@ export default function ProfileScreen() {
             editable={false}
           />
         </View>
+      <View>
+              <Pressable
+                onPress={() => {
+                  Alert.alert("Logout", "Anda yakin ingin logout?", [
+                    {
+                      text: "Logout",
+                      onPress: () => {
+                        router.replace("../(auth)/login");
+                        logout();
+                      }
+                    },
+                    {
+                      text: "Batal",
+                      style: "cancel"
+                    }
+                  ]);
+                }}
+                className="flex-row items-center border-b border-gray-200 pb-2"
+              >
+                <Ionicons name="log-out-outline" size={30} color="#3B82F6" />
+                <Text className="ml-3 text-gray-700 capitalize">Logout</Text>
+              </Pressable>
+            </View>
       </View>
     </ScrollView>
   );
