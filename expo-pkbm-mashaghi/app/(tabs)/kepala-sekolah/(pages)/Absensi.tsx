@@ -89,9 +89,9 @@ export default function AbsensiScreen() {
   return (
     <View className="flex-1 bg-white">
 
-      <View className="flex-row items-center bg-blue-600 px-4 py-3 shadow-md elevation-4">
+      <View className="flex-row items-center bg-white px-4 py-3 shadow-md elevation-4">
         <TouchableOpacity onPress={() => router.back()} className="mr-3">
-          <AntDesign name="arrowleft" size={24} color="white" />
+          <AntDesign name="arrowleft" size={24} color="black" />
         </TouchableOpacity>
         <Text className="text-white text-lg font-bold">Absensi</Text>
       </View>
