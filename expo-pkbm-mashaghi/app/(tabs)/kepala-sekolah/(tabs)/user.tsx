@@ -5,11 +5,9 @@ import { getUser, logout, User } from "@/lib/auth/authStorage";
 import { useRouter } from "expo-router";
 
 
-
 export default function ProfileScreen() {
- 
-  const router = useRouter();
 
+  const router = useRouter()
 
   const [user, setUser] = useState<User | null>(null);
 
@@ -25,6 +23,7 @@ export default function ProfileScreen() {
     const year = date.getFullYear();
     return `${day} ${month} ${year}`;
   };
+  
 
   useEffect(() => {
     const loadUser = async () => {
@@ -127,29 +126,29 @@ export default function ProfileScreen() {
             editable={false}
           />
         </View>
-      </View>
       <View>
-        <Pressable
-          onPress={() => {
-            Alert.alert("Logout", "Anda yakin ingin logout?", [
-              {
-                text: "Logout",
-                onPress: () => {
-                  logout();
-                  router.replace("../../../auth/login");
-                }
-              },
-              {
-                text: "Batal",
-                style: "cancel"
-              }
-            ]);
-          }}
-          className="flex-row items-center border-b border-gray-200 pb-2"
-        >
-          <Ionicons name="log-out-outline" size={30} color="#3B82F6" />
-          <Text className="ml-3 text-gray-700 capitalize">Logout</Text>
-        </Pressable>
+              <Pressable
+                onPress={() => {
+                  Alert.alert("Logout", "Anda yakin ingin logout?", [
+                    {
+                      text: "Logout",
+                      onPress: () => {
+                        router.replace("../(auth)/login");
+                        logout();
+                      }
+                    },
+                    {
+                      text: "Batal",
+                      style: "cancel"
+                    }
+                  ]);
+                }}
+                className="flex-row items-center border-b border-gray-200 pb-2"
+              >
+                <Ionicons name="log-out-outline" size={30} color="#3B82F6" />
+                <Text className="ml-3 text-gray-700 capitalize">Logout</Text>
+              </Pressable>
+            </View>
       </View>
     </ScrollView>
   );

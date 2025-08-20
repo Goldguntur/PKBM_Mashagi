@@ -21,21 +21,9 @@ export async function login(email, password, role, kelas) {
   }
 }
 
-export async function register(email, password, username, role, kelas, nisn, nik, no_wa, name, password_confirmation, tanggal_lahir) {
+export async function register(payload) {
   try {
-    const response = await axios.post("/register", {
-      email,
-      password,
-      username,
-      role,
-      kelas,
-      nisn,
-      nik,
-      no_wa,
-      name,
-      password_confirmation,
-      tanggal_lahir
-    });
+    const response = await axios.post("/register", payload);
 
     console.log("Register response:", response.data);
     const user = response.data;
