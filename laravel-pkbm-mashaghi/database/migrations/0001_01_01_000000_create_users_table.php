@@ -13,34 +13,14 @@ return new class extends Migration {
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('no_wa')->unique();
+            $table->string('no_wa')->nullable()->unique();
             $table->string('nisn')->nullable()->unique();
             $table->string('nik')->nullable()->unique();
-
-            // Kelas enum
-            $table->enum('kelas', [
-                'paketA_faseA',
-                'paketA_faseB',
-                'paketA_faseC',
-                'paketB_kelas7',
-                'paketB_kelas8',
-                'paketB_kelas9',
-                'paketC_kelas10',
-                'paketC_kelas11',
-                'paketC_kelas12'
-            ])->nullable();
 
             $table->date('tanggal_lahir')->nullable();
 
             $table->string('password');
-
-            // Role enum
-            $table->enum('role', [
-                'kepalaSekolah',
-                'tenagaPendidik',
-                'guru',
-                'pesertaDidik'
-            ])->default('pesertaDidik');
+            $table->string('role');
 
             $table->rememberToken();
             $table->timestamps();
@@ -51,6 +31,13 @@ return new class extends Migration {
             $table->string('token');
             $table->timestamp('created_at')->nullable();
         });
+
+        Schema::table('users', function (Blueprint $t) {
+    if (Schema::hasColumn('users', 'kelas')) {
+        $t->dropColumn('kelas');
+    }
+});
+
 
         Schema::create('sessions', function (Blueprint $table) {
             $table->string('id')->primary();

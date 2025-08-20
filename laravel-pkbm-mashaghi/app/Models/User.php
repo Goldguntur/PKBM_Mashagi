@@ -18,7 +18,8 @@ class User extends Authenticatable
         'no_wa',
         'nisn',
         'nik',
-        'kelas',
+        'kelas_id',
+        'mapel_ids',
         'tanggal_lahir',
         'password',
         'role',
@@ -28,4 +29,18 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    protected $casts = [
+        'mapel_ids' => 'array',
+    ];
+
+     public function kelas()
+    {
+        return $this->belongsTo(Kelas::class, 'kelas_id');
+    }
+
+   public function mapels()
+{
+    return $this->belongsToMany(Mapel::class, 'guru_mapel', 'guru_id', 'mapel_id');
+}
 }
