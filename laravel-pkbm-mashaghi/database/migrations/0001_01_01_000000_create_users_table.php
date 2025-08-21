@@ -13,7 +13,7 @@ return new class extends Migration {
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('no_wa')->nullable()->unique();
+            $table->string('no_wa')->nullable();
             $table->string('nisn')->nullable()->unique();
             $table->string('nik')->nullable()->unique();
 
@@ -21,6 +21,8 @@ return new class extends Migration {
 
             $table->string('password');
             $table->string('role');
+
+            $table->foreignId('kelas_id')->nullable()->constrained('kelas')->onDelete('set null');
 
             $table->rememberToken();
             $table->timestamps();

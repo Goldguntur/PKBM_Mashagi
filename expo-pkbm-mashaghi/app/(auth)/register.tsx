@@ -46,15 +46,15 @@ export default function Register() {
   ];
 
   const kelasList = [
-    { value: "1", label: "Paket A Fase A" },
-    { value: "2", label: "Paket A Fase B" },
-    { value: "3", label: "Paket A Fase C" },
-    { value: "4", label: "Paket B Kelas 7" },
-    { value: "5", label: "Paket B Kelas 8" },
-    { value: "6", label: "Paket B Kelas 9" },
-    { value: "7", label: "Paket C Kelas 10" },
-    { value: "8", label: "Paket C Kelas 11" },
-    { value: "9", label: "Paket C Kelas 12" },
+    { id: 1, label: "Paket A Fase A" },
+    { id: 2, label: "Paket A Fase B" },
+    { id: 3, label: "Paket A Fase C" },
+    { id: 4, label: "Paket B Kelas 7" },
+    { id: 5, label: "Paket B Kelas 8" },
+    { id: 6, label: "Paket B Kelas 9" },
+    { id: 7, label: "Paket C Kelas 10" },
+    { id: 8, label: "Paket C Kelas 11" },
+    { id: 9, label: "Paket C Kelas 12" },
   ];
 
   useEffect(() => {
@@ -238,25 +238,30 @@ export default function Register() {
             </Picker>
           </View>
 
-          {role === "pesertaDidik" ? (
-            <CustomInput
-              title="NISN"
-              placeholder="Masukkan NISN"
-              value={nisn}
-              color="white"
-              handleChangeText={setNisn}
-            />
-          ) : (
-            <CustomInput
-              title="NIK"
-              placeholder="Masukkan NIK"
-              value={nik}
-              color="white"
-              handleChangeText={setNik}
-            />
-          )}
 
 
+{role === "guru" && (
+  <>
+    <Text className="text-white mb-1">Mata Pelajaran</Text>
+    <MultiSelect
+      style={{
+        borderWidth: 1,
+        borderColor: "white",
+        borderRadius: 8,
+        padding: 12,
+        backgroundColor: "white",
+        marginBottom: 16,
+      }}
+      data={mapelList}
+      labelField="label"
+      valueField="value"
+      placeholder="Pilih Mata Pelajaran"
+      value={mapel}
+      onChange={(items) => setMapel(items)}
+      selectedStyle={{ backgroundColor: "#ffffff",  borderRadius: 8 }}
+    />
+  </>
+)}
           {role === "pesertaDidik" && (
             <>
               <Text className="text-white mb-1">Kelas</Text>
@@ -264,38 +269,33 @@ export default function Register() {
                 <Picker selectedValue={kelas} onValueChange={setKelas}>
                   <Picker.Item label="Pilih Kelas" value="" />
                   {kelasList.map((k) => (
-                    <Picker.Item key={k.value} label={k.label} value={k.value} />
+                    <Picker.Item key={k.id} label={k.label} value={k.id} />
                   ))}
                 </Picker>
               </View>
             </>
           )}
 
-          {role === "guru" && (
-            <>
-              <Text className="text-white mb-1">Mata Pelajaran</Text>
-              <MultiSelect
-                style={{
-                  borderWidth: 1,
-                  borderColor: "white",
-                  borderRadius: 8,
-                  padding: 12,
-                  backgroundColor: "white",
-                  marginBottom: 16,
-                }}
-                data={mapelList}
-                labelField="label"
-                valueField="value"
-                placeholder="Pilih Mata Pelajaran"
-                value={mapel}
-                onChange={(items) => setMapel(items)}
-                selectedStyle={{ backgroundColor: "#ffffff",  borderRadius: 8 }}
-              />
-            </>
-          )}
 
+            {role === "pesertaDidik" ? (
+              <CustomInput
+                title="NISN"
+                placeholder="Masukkan NISN"
+                value={nisn}
+                color="white"
+                handleChangeText={setNisn}
+              />
+            ) : (
+              <CustomInput
+                title="NIK"
+                placeholder="Masukkan NIK"
+                value={nik}
+                color="white"
+                handleChangeText={setNik}
+              />
+            )}
           <TouchableOpacity
-            className={`bg-white rounded p-2 ${loading ? "opacity-50" : ""}`}
+            className={`bg-white rounded p-2 mt-4 ${loading ? "opacity-50" : ""}`}
             onPress={handleRegister}
             disabled={loading}
           >

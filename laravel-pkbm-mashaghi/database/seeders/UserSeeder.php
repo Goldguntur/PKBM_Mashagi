@@ -36,20 +36,9 @@ class UserSeeder extends Seeder
             'kelas_id' => null,
         ]);
 
-        // Guru
-        User::create([
-            'name' => 'Pak Guru Matematika',
-            'username' => 'guru01',
-            'email' => 'guru@example.com',
-            'password' => Hash::make('password123'),
-            'no_wa' => '081234567892',
-            'nisn' => null,
-            'mapel_ids' => [1],
-            'nik' => '3276012309870003',
-            'role' => 'guru',
-            'kelas_id' => null,
-        ]);
+        ;
 
+        
       
     }
 }
