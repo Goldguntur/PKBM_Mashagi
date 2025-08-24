@@ -17,7 +17,7 @@ class AuthController extends Controller
         'username'      => 'nullable|string|max:50|unique:users',
         'email'         => 'required|string|email|max:255|unique:users',
         'password'      => 'required|string|min:6|confirmed',
-        'role'          => 'required|in:pesertaDidik,guru,tenagaPendidik,kepalaSekolah',
+        'role'          => 'in:pesertaDidik,guru,tenagaPendidik,kepalaSekolah',
         'kelas_id'      => 'nullable|exists:kelas,id',
         'nisn'          => 'nullable|string|max:20',
         'nik'           => 'nullable|string|max:20',

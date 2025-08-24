@@ -20,7 +20,7 @@ return new class extends Migration {
             $table->date('tanggal_lahir')->nullable();
 
             $table->string('password');
-            $table->string('role');
+            $table->string('role')->nullable();
 
             $table->foreignId('kelas_id')->nullable()->constrained('kelas')->onDelete('set null');
 

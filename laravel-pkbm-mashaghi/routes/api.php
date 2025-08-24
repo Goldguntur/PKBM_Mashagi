@@ -13,13 +13,27 @@ Route::middleware('auth:sanctum')->get('/me', fn (Request $request) => $request-
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login',    [AuthController::class, 'login']);
 
-// 📌 BIKIN PUBLIC: daftar mapel untuk dipakai saat register (belum login)
+
 Route::get('/mapel', [MapelController::class, 'index']);
+
+
+Route::middleware('auth:sanctum')->prefix('mutasi')->group(function () {
+    Route::get('/', [MutasiController::class, 'index']);  
+    Route::post('/', [MutasiController::class, 'store']);  
+    Route::get('/{id}', [MutasiController::class, 'show']);  
+    Route::put('/{id}', [MutasiController::class, 'update']); 
+    Route::delete('/{id}', [MutasiController::class, 'destroy']); 
+});
 
 Route::get('/pengumuman',  [PengumumanController::class, 'index']);
 Route::post('/pengumuman', [PengumumanController::class, 'store']);
 
 Route::get('/guru/{id}', [AuthController::class, 'showGuru']);
+
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/users', [MutasiController::class, 'index']); 
+    Route::put('/users/{id}/mutasi', [MutasiController::class, 'mutasi']); 
+});
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
