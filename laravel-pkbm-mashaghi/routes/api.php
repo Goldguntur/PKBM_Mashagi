@@ -3,9 +3,11 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\KelasController;
 use App\Http\Controllers\MapelController;
 use App\Http\Controllers\PengumumanController;
 use App\Http\Controllers\MutasiController;
+use App\Http\Controllers\UserController;
 
 Route::middleware('auth:sanctum')->get('/user', fn (Request $request) => $request->user());
 Route::middleware('auth:sanctum')->get('/me', fn (Request $request) => $request->user());
@@ -28,12 +30,18 @@ Route::middleware('auth:sanctum')->prefix('mutasi')->group(function () {
 Route::get('/pengumuman',  [PengumumanController::class, 'index']);
 Route::post('/pengumuman', [PengumumanController::class, 'store']);
 
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/users', [UserController::class, 'index']);
+    Route::get('/users/{id}', [UserController::class, 'show']); 
+});
+
 Route::get('/guru/{id}', [AuthController::class, 'showGuru']);
 
-Route::middleware(['auth:sanctum'])->group(function () {
-    Route::get('/users', [MutasiController::class, 'index']); 
-    Route::put('/users/{id}/mutasi', [MutasiController::class, 'mutasi']); 
-});
+// Route::middleware(['auth:sanctum'])->group(function () {
+//     Route::get('/users', [MutasiController::class, 'index']); 
+//     Route::put('/users/{id}/mutasi', [MutasiController::class, 'mutasi']); 
+// });
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -46,3 +54,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/mapel/{id}/unassign-guru', [MapelController::class, 'unassignGuru']);
 });
 
+Route::get('/mapels', [MapelController::class, 'index']);
+Route::get('/kelas', [KelasController::class, 'index']);

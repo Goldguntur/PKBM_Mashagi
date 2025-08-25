@@ -147,10 +147,13 @@ export default function Register() {
         <TouchableOpacity onPress={() => router.back()}>
           <AntDesign name="arrowleft" size={24} color="black" />
         </TouchableOpacity>
+          <View className="flex-1 justify-center">
+            <Text className="text-xl text-center font-bold mr-4 text-black">Buat Pengumuman</Text>  
+          </View>
       </View>
 
       <ScrollView
-        className="flex-1 px-4 pt-16"
+        className="flex-1 px-4 pt-24"
         contentContainerStyle={{ paddingBottom: 100 }}
         keyboardShouldPersistTaps="handled"
       >

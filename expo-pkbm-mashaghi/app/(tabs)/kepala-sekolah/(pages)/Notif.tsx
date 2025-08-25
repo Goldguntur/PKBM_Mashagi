@@ -48,7 +48,10 @@ export default function FormPengumuman() {
       <View className="flex-row items-center mt-4 p-4">
         <TouchableOpacity onPress={() => router.back()}>
           <AntDesign name="arrowleft" size={24} color="black" />
-        </TouchableOpacity>   
+        </TouchableOpacity> 
+        <View className="flex-1 justify-center">
+          <Text className="text-xl text-center font-bold mr-4 text-black">Buat Pengumuman</Text>  
+        </View>
       </View>
     <View className=" bg-white p-4">
       <Text className="text-lg font-bold mt-2">Judul Pengumuman</Text>

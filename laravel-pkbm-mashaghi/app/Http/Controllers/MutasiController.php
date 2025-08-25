@@ -15,7 +15,10 @@ class MutasiController extends Controller
     {
         $this->authorizeKepsek();
 
-        $mutasi = Mutasi::with(['user', 'kelasAsal', 'kelasTujuan'])->latest()->get();
+        $mutasi = Mutasi::with(['user' => fn($q) => $q->withTrashed(), 'kelasAsal', 'kelasTujuan'])
+            ->latest()
+            ->get();
+
         return response()->json($mutasi);
     }
 
@@ -25,14 +28,23 @@ class MutasiController extends Controller
         $this->authorizeKepsek();
 
         $validated = $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'jenis'   => 'required|string',
-            'kelas_tujuan_id' => 'nullable|exists:kelas,id',
-            'mapel_tujuan_id' => 'nullable|exists:mapels,id',
+            'user_id'        => 'required|exists:users,id',
+            'jenis'          => 'required|string',
+            'kelas_tujuan_id'=> 'nullable|exists:kelas,id',
+            'mapel_tujuan_id'=> 'nullable|exists:mapels,id',
         ]);
 
-        $user = User::findOrFail($validated['user_id']);
+        $user = User::withTrashed()->findOrFail($validated['user_id']);
         $kelasAsal = $user->kelas_id;
+
+        $mutasi = Mutasi::create([
+            'user_id'         => $validated['user_id'],
+            'jenis'           => $validated['jenis'],
+            'kelas_asal_id'   => $kelasAsal,
+            'kelas_tujuan_id' => $validated['kelas_tujuan_id'] ?? null,
+            'mapel_tujuan_id' => $validated['mapel_tujuan_id'] ?? null,
+            'status'          => 'disetujui',
+        ]);
 
         // Jalankan logika mutasi langsung
         switch ($validated['jenis']) {
@@ -45,26 +57,19 @@ class MutasiController extends Controller
             case 'murid_keluar':
             case 'guru_keluar':
             case 'tendik_keluar':
-                $user->delete();
+                $user->delete(); // soft delete
                 break;
 
             case 'guru_pindah_mapel':
-                $user->mapels()->sync([$validated['mapel_tujuan_id']]);
+                if (!empty($validated['mapel_tujuan_id'])) {
+                    $user->mapels()->sync([$validated['mapel_tujuan_id']]);
+                }
                 break;
         }
 
         if ($user->exists) {
             $user->save();
         }
-
-        $mutasi = Mutasi::create([
-            'user_id'         => $validated['user_id'],
-            'jenis'           => $validated['jenis'],
-            'kelas_asal_id'   => $kelasAsal,
-            'kelas_tujuan_id' => $validated['kelas_tujuan_id'] ?? null,
-            'mapel_tujuan_id' => $validated['mapel_tujuan_id'] ?? null,
-            'status'          => 'disetujui',
-        ]);
 
         $this->simpanHistori($mutasi, $user, 'disetujui');
 
@@ -78,38 +83,69 @@ class MutasiController extends Controller
     public function show($id)
     {
         $this->authorizeKepsek();
-        $mutasi = Mutasi::with(['user', 'kelasAsal', 'kelasTujuan', 'histori'])->findOrFail($id);
+
+        $mutasi = Mutasi::with([
+            'user' => fn($q) => $q->withTrashed(),
+            'kelasAsal',
+            'kelasTujuan',
+            'histori'
+        ])->findOrFail($id);
+
         return response()->json($mutasi);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $this->authorizeKepsek();
+
+        $validated = $request->validate([
+            'status' => 'required|string|in:disetujui,ditolak',
+        ]);
+
+        $mutasi = Mutasi::findOrFail($id);
+        $mutasi->status = $validated['status'];
+        $mutasi->save();
+
+        $user = User::withTrashed()->find($mutasi->user_id);
+
+        $this->simpanHistori($mutasi, $user, $validated['status']);
+
+        return response()->json([
+            'message' => 'Mutasi berhasil diperbarui',
+            'mutasi'  => $mutasi
+        ]);
+    }
+
+    private function simpanHistori(Mutasi $mutasi, ?User $user, $aksi)
+    {
+        HistoriMutasi::create([
+            'mutasi_id' => $mutasi->id,
+            'user_id'   => $user?->id,
+            'aksi'      => $aksi,
+            'keterangan'=> $mutasi->jenis
+        ]);
+
+        if ($user) {
+            // Batasi histori max 50 record per user
+            $historiCount = HistoriMutasi::where('user_id', $user->id)->count();
+            if ($historiCount > 50) {
+                $toDelete = HistoriMutasi::where('user_id', $user->id)
+                    ->orderBy('created_at', 'asc')
+                    ->take($historiCount - 50)
+                    ->get();
+
+                foreach ($toDelete as $h) {
+                    $h->delete();
+                }
+            }
+        }
     }
 
     private function authorizeKepsek()
     {
         $user = Auth::user();
-        if ($user->role !== 'kepalaSekolah') {
+        if (!$user || $user->role !== 'kepalaSekolah') {
             abort(403, 'Unauthorized');
-        }
-    }
-
-    private function simpanHistori(Mutasi $mutasi, User $user, $aksi)
-    {
-        HistoriMutasi::create([
-            'mutasi_id' => $mutasi->id,
-            'user_id'   => $user->id,
-            'aksi'      => $aksi,
-            'keterangan'=> $mutasi->jenis
-        ]);
-
-        // Batasi histori max 50 record per user
-        $historiCount = HistoriMutasi::where('user_id', $user->id)->count();
-        if ($historiCount > 50) {
-            $toDelete = HistoriMutasi::where('user_id', $user->id)
-                ->orderBy('created_at', 'asc')
-                ->take($historiCount - 50)
-                ->get();
-
-            foreach ($toDelete as $h) {
-                $h->delete();
-            }
         }
     }
 }
