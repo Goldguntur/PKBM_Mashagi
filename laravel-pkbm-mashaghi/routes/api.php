@@ -8,6 +8,8 @@ use App\Http\Controllers\MapelController;
 use App\Http\Controllers\PengumumanController;
 use App\Http\Controllers\MutasiController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AbsensiGuruTendikController;
+use App\Http\Controllers\LaporanAbsensiController;
 
 Route::middleware('auth:sanctum')->get('/user', fn (Request $request) => $request->user());
 Route::middleware('auth:sanctum')->get('/me', fn (Request $request) => $request->user());
@@ -27,14 +29,16 @@ Route::middleware('auth:sanctum')->prefix('mutasi')->group(function () {
     Route::delete('/{id}', [MutasiController::class, 'destroy']); 
 });
 
-Route::get('/pengumuman',  [PengumumanController::class, 'index']);
-Route::post('/pengumuman', [PengumumanController::class, 'store']);
+    Route::get('/pengumuman',  [PengumumanController::class, 'index']);
+    Route::post('/pengumuman', [PengumumanController::class, 'store']); 
 
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/users', [UserController::class, 'index']);
     Route::get('/users/{id}', [UserController::class, 'show']); 
+    Route::patch('/users/{id}/absensi-manager', [UserController::class, 'setAbsensiManager']);
 });
+
 
 Route::get('/guru/{id}', [AuthController::class, 'showGuru']);
 
@@ -56,3 +60,22 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::get('/mapels', [MapelController::class, 'index']);
 Route::get('/kelas', [KelasController::class, 'index']);
+
+Route::prefix('absensi-guru-tendik')
+        ->middleware('auth:sanctum', 'absensi.permission:guru') 
+        ->group(function () {
+            Route::get('/', [AbsensiGuruTendikController::class, 'index']); 
+            Route::post('/', [AbsensiGuruTendikController::class, 'store']); 
+            Route::put('/{id}/pulang', [AbsensiGuruTendikController::class, 'pulang']); 
+            Route::get('/{id}', [AbsensiGuruTendikController::class, 'show']); 
+        });
+
+Route::middleware(['auth:sanctum', 'role:kepalaSekolah'])->put('/users/{id}/absensi_guruTendik', [UserController::class, 'setAbsensiManager']);
+
+
+    Route::prefix('laporan-absensi')
+        ->middleware('auth:sanctum', 'absensi.permission:guru')
+        ->group(function () {
+            Route::get('/excel', [LaporanAbsensiController::class, 'exportExcel']);
+            Route::get('/pdf', [LaporanAbsensiController::class, 'exportPdf']);
+        });

@@ -8,14 +8,12 @@ use Illuminate\Http\Request;
 
 class MapelController extends Controller
 {
-    // List semua mapel
     public function index()
     {
         $mapel = Mapel::with('guru')->get();
         return response()->json($mapel);
     }
 
-    // Tambah mapel
     public function store(Request $request)
     {
         $request->validate([
@@ -27,14 +25,12 @@ class MapelController extends Controller
         return response()->json(['message' => 'Mapel berhasil dibuat', 'data' => $mapel], 201);
     }
 
-    // Tampilkan detail mapel
     public function show($id)
     {
         $mapel = Mapel::with('guru')->findOrFail($id);
         return response()->json($mapel);
     }
 
-    // Update mapel
     public function update(Request $request, $id)
     {
         $mapel = Mapel::findOrFail($id);
@@ -48,7 +44,6 @@ class MapelController extends Controller
         return response()->json(['message' => 'Mapel berhasil diperbarui', 'data' => $mapel]);
     }
 
-    // Hapus mapel
     public function destroy($id)
     {
         $mapel = Mapel::findOrFail($id);
@@ -56,7 +51,6 @@ class MapelController extends Controller
         return response()->json(['message' => 'Mapel berhasil dihapus']);
     }
 
-    // Assign guru ke mapel
     public function assignGuru(Request $request, $mapelId)
     {
         $request->validate([
@@ -71,7 +65,6 @@ class MapelController extends Controller
         return response()->json(['message' => 'Guru berhasil ditambahkan ke mapel']);
     }
 
-    // Unassign guru dari mapel
     public function unassignGuru(Request $request, $mapelId)
     {
         $request->validate([

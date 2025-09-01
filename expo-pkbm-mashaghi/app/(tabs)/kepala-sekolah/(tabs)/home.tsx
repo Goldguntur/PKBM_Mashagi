@@ -27,6 +27,7 @@ const KepalaSekolahHome = () => {
 
   const cards = [
     { title: "Absensi", description: "Absensi Guru Dan Tenaga Pendidik", route: "../(pages)/Absensi", imgUrl: () => require("@/assets/images/absen.jpeg") },
+    { title: "Laporan Absensi", description: "Laporan Absensi Guru Dan Tenaga Pendidik", route: "../(pages)/Laporan", imgUrl: () => require("@/assets/images/laporan.jpg") },
     { title: "Registrasi", description: "Registerasi Tenaga Pendidik, Guru, Dan Peserta", route: "../../../(auth)/register", imgUrl: () => require("@/assets/images/register.jpg") },
     { title: "Pengumuman", description: "Pembuatan pengumuman", route: "../(pages)/Notif", imgUrl: () => require("@/assets/images/anouncement.jpg") },
     { title: "Mutasi", description: "Pengolahan Mutasi Pendidik Dan Peserta didik", route: "../(pages)/Mutasi", imgUrl: () => require("@/assets/images/mutasi.jpg") },

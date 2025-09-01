@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    // Ambil semua user, bisa filter role lewat query param
     public function index(Request $request)
     {
         $query = User::query();
@@ -19,10 +18,25 @@ class UserController extends Controller
         return response()->json($query->get());
     }
 
-    // Ambil detail user berdasarkan ID
     public function show($id)
     {
         $user = User::findOrFail($id);
         return response()->json($user);
     }
+
+    public function setAbsensiManager(Request $request, $id)
+{
+    $request->validate([
+        'absensi_guruTendik' => 'required|boolean'
+    ]);
+
+    $user = User::findOrFail($id);
+    $user->absensi_guruTendik = $request->absensi_guruTendik;
+    $user->save();
+
+    return response()->json([
+        'message' => 'Status absensi manager berhasil diubah',
+        'user' => $user
+    ]);
+}
 }

@@ -21,9 +21,9 @@ return new class extends Migration {
 
             $table->string('password');
             $table->string('role')->nullable();
+            $table->boolean('absensi_guruTendik')->default(false)->nullable();
 
             $table->foreignId('kelas_id')->nullable()->constrained('kelas')->onDelete('set null');
-
             $table->rememberToken();
             $table->timestamps();
         });

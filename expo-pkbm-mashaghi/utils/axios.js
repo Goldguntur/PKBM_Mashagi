@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getUserToken } from "~/lib/auth/authStorage";
 
-export const axiosUrl = "https://25752aa633ab.ngrok-free.app/api";
+export const axiosUrl = "https://ea9eab0ccb82.ngrok-free.app/api";
 
 const instance = axios.create({
   baseURL: axiosUrl,

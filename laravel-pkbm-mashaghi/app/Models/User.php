@@ -24,6 +24,7 @@ class User extends Authenticatable
         'tanggal_lahir',
         'password',
         'role',
+        'absensi_guruTendik',
         'deleted_at',
     ];
 
@@ -34,6 +35,7 @@ class User extends Authenticatable
 
     protected $casts = [
         'mapel_ids' => 'array',
+        'absensi_guruTendik' => 'boolean'
     ];
 
      public function kelas()

@@ -1,20 +1,140 @@
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity, useWindowDimensions, Pressable, Dimensions } from "react-native";
-import { TabView, SceneMap } from "react-native-tab-view";
-import { router } from "expo-router";
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  ActivityIndicator,
+  Pressable,
+  Dimensions,
+  useWindowDimensions,
+  Alert,
+} from "react-native";
+import { Picker } from "@react-native-picker/picker"; 
+import axios from "~/utils/axios";
+import { SceneMap, TabView } from "react-native-tab-view";
+import { useRouter } from "expo-router";
 import { AntDesign } from "@expo/vector-icons";
 
-const GuruRoute = () => (
-  <View className="flex-1 bg-white justify-center items-center">
-    <Text className="text-lg font-bold">Konten Absensi Guru</Text>
-  </View>
-);
+const AbsensiList = ({ role }: { role: "guru" | "tenagaPendidik" }) => {
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-const TenagaPendidikRoute = () => (
-  <View className="flex-1 bg-white justify-center items-center">
-    <Text className="text-lg font-bold">Konten Tenaga Pendidik</Text>
-  </View>
-);
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.get("/absensi-guru-tendik", {
+        params: { role },
+      });
+      setData(res.data);
+    } catch (err) {
+      console.log("❌ Error fetch:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAbsen = async (id: number, status: string) => {
+    try {
+      await axios.post("/absensi-guru-tendik", { user_id: id, status });
+      alert(`✅ Absen (${status}) berhasil`);
+      fetchData();
+    } catch (err: any) {
+      console.log("❌ Error absen:", err.response?.data || err);
+      alert("Gagal absen");
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return (
+      <View className="flex-1 justify-center items-center">
+        <ActivityIndicator size="large" color="#2563eb" />
+      </View>
+    );
+  }
+
+  return (
+    <FlatList
+      data={data}
+      keyExtractor={(item) => item.id.toString()}
+      renderItem={({ item }) => (
+        <View className="bg-white px-4 py-3 border-b border-gray-200">
+          <Text className="text-lg font-semibold">{item.name}</Text>
+
+          {item.status !== "belum absen" ? (
+            <View className="mt-1 flex-row">
+              <View className="">
+              <Text className="text-gray-600 text-sm">{item.email}</Text>
+              {item.jam_masuk && (
+                <Text className="text-gray-600 text-sm">
+                  Waktu Absensi: {item.jam_masuk}
+                </Text>
+              )}
+              {item.jam_pulang && (
+                <Text className="text-gray-600 text-sm">
+                  Pulang: {item.jam_pulang}
+                </Text>
+              )}
+              </View>
+           <View className="flex-row  items-center justify-end flex-1">
+             {item.status == "hadir" && (
+                <Text className="text-green-600 text-lg font-bold">Hadir</Text>
+              )}
+              {item.status == "sakit" && (
+                <Text className="text-yellow-600 text-lg font-bold">Sakit</Text>
+              )}
+              {item.status == "izin" && (
+                <Text className="text-blue-600 text-lg font-bold">Izin</Text>
+              )}
+              {item.status == "alpha" && (
+                <Text className="text-red-600 text-lg font-bold">Alpha</Text>
+              )}
+              </View>
+              
+            </View>
+                 
+          ) : (
+            <View className="mt-1 flex-row justify-between">
+              <View className="">
+              <Text className="text-gray-600 text-sm">{item.email}</Text>
+              </View>
+            <View className="flex-row items-center justify-end mt-2">
+              {["hadir", "izin", "sakit", "alpha"].map((status, idx) => {
+                const colors = ["bg-green-500", "bg-blue-600", "bg-yellow-400", "bg-red-600"];
+                const labels = ["H", "I", "S", "A"];
+                return (
+                  
+                  <TouchableOpacity
+                    key={status}
+                    onPress={() =>
+                      Alert.alert("Konfirmasi", `Apakah Anda yakin ingin absen ${status}?`, [
+                        { text: "Ya", onPress: () => handleAbsen(item.id, status) },
+                        { text: "Tidak", style: "cancel" },
+                      ])
+                    }
+                    className={`${colors[idx]} px-4 py-2 rounded-lg mr-2`}
+                  >
+                    <Text className="text-white font-semibold">{labels[idx]}</Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </View>
+          )}
+        </View>
+      )}
+    />
+  );
+};
+
+
+const GuruRoute = () => <AbsensiList role="guru" />;
+
+const TenagaPendidikRoute = () => <AbsensiList role="tenagaPendidik" />;
 
 type Route = { key: string; title: string };
 type CustomTabBarProps = {
@@ -24,7 +144,12 @@ type CustomTabBarProps = {
   inactiveColor: string;
 };
 
-const CustomTabBar = ({ navigationState, jumpTo, activeColor, inactiveColor }: CustomTabBarProps) => {
+const CustomTabBar = ({
+  navigationState,
+  jumpTo,
+  activeColor,
+  inactiveColor,
+}: CustomTabBarProps) => {
   const width = Dimensions.get("window").width;
   const tabWidth = width / navigationState.routes.length;
 
@@ -41,7 +166,7 @@ const CustomTabBar = ({ navigationState, jumpTo, activeColor, inactiveColor }: C
             >
               <Text
                 style={{
-                  color: focused ? activeColor : inactiveColor, 
+                  color: focused ? activeColor : inactiveColor,
                   fontWeight: focused ? "700" : "500",
                   fontSize: 16,
                 }}
@@ -72,8 +197,8 @@ const CustomTabBar = ({ navigationState, jumpTo, activeColor, inactiveColor }: C
 export default function AbsensiScreen() {
   const layout = useWindowDimensions();
 
-  const ACTIVE_COLOR = "#2563eb";   
-  const INACTIVE_COLOR = "#64748b"; 
+  const ACTIVE_COLOR = "#2563eb";
+  const INACTIVE_COLOR = "#64748b";
 
   const [index, setIndex] = useState(0);
   const [routes] = useState<Route[]>([
@@ -86,14 +211,25 @@ export default function AbsensiScreen() {
     tenaga: TenagaPendidikRoute,
   });
 
+  const today = new Date().toLocaleDateString("id-ID", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
+  const router = useRouter();
+
   return (
     <View className="flex-1 bg-white">
-
-      <View className="flex-row items-center bg-white px-4 py-3 shadow-md elevation-4">
+      <View className="flex-row items-center bg-blue-600 px-4 py-4 shadow-md elevation-4">
         <TouchableOpacity onPress={() => router.back()} className="mr-3">
-          <AntDesign name="arrowleft" size={24} color="black" />
+          <AntDesign name="arrowleft" size={24} color="white" />
         </TouchableOpacity>
-        <Text className="text-white text-lg font-bold">Absensi</Text>
+        <View>
+          <Text className="text-white text-2xl font-bold mt-2">Absensi</Text>
+          <Text className="text-white text-sm">{today}</Text>
+        </View>
       </View>
 
       <TabView

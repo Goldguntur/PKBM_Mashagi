@@ -10,7 +10,6 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        // Kepala Sekolah
         User::create([
             'name' => 'Pak Kepala',
             'username' => 'kepsek01',
@@ -23,7 +22,6 @@ class UserSeeder extends Seeder
             'kelas_id' => null,
         ]);
 
-        // Tenaga Pendidik
         User::create([
             'name' => 'Bu TU',
             'username' => 'tuperson',
@@ -36,9 +34,8 @@ class UserSeeder extends Seeder
             'kelas_id' => null,
         ]);
 
-        // Guru aktif
         $guru = User::create([
-            'name' => 'Pak Guru',
+            'name' => 'Pak Adrian',
             'username' => 'guru01',
             'email' => 'guru@example.com',
             'password' => Hash::make('password123'),
@@ -46,13 +43,27 @@ class UserSeeder extends Seeder
             'nisn' => null,
             'nik' => '3276012309870003',
             'role' => 'guru',
+            'absensi_guruTendik' => false,
             'kelas_id' => null,
         ]);
         $guru->mapels()->attach([1, 2]);
 
-        // Guru calon keluar
+        $guruManager = User::create([
+    'name' => 'Pak Rizki',
+    'username' => 'guruManager',
+    'email' => 'gurumanager@example.com',
+    'password' => Hash::make('password123'),
+    'no_wa' => '081234567896',
+    'nisn' => null,
+    'nik' => '3276012309870005',
+    'role' => 'guru',
+    'kelas_id' => null,
+    'absensi_guruTendik' => true, 
+        ]);
+        $guruManager->mapels()->attach([1]);
+
         $guruKeluar = User::create([
-            'name' => 'Bu Guru Keluar',
+            'name' => 'Miss Tia',
             'username' => 'guruKeluar',
             'email' => 'gurukeluar@example.com',
             'password' => Hash::make('password123'),
@@ -60,11 +71,11 @@ class UserSeeder extends Seeder
             'nisn' => null,
             'nik' => '3276012309870004',
             'role' => 'guru',
+            'absensi_guruTendik' => false,
             'kelas_id' => null,
         ]);
         $guruKeluar->mapels()->attach([3]);
 
-        // Murid untuk naik kelas
         User::create([
             'name' => 'Siswa A',
             'username' => 'murid01',
@@ -73,10 +84,9 @@ class UserSeeder extends Seeder
             'no_wa' => '081234567893',
             'nisn' => '20230101',
             'role' => 'pesertaDidik',
-            'kelas_id' => 1, // Paket A Fase A
+            'kelas_id' => 1, 
         ]);
 
-        // Murid biasa
         User::create([
             'name' => 'Siswa B',
             'username' => 'murid02',

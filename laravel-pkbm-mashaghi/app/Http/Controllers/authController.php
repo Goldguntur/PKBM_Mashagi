@@ -69,15 +69,22 @@ class AuthController extends Controller
         $request->validate([
             'email'    => 'required|string',
             'password' => 'required|string',
+            'role'     => 'in:pesertaDidik,guru,tenagaPendidik,kepalaSekolah',
         ]);
 
         $user = User::where('email', $request->email)
                     ->orWhere('username', $request->email)
-                    ->first();
+                    ->first();            
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
                 'email' => ['Email/Username atau password salah.'],
+            ]);
+        }
+
+        if ($user->role !== $request->role) {
+            throw ValidationException::withMessages([
+                'role' => ['Role tidak sesuai.'],
             ]);
         }
 
