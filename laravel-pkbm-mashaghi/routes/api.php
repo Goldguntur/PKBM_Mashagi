@@ -74,8 +74,10 @@ Route::middleware(['auth:sanctum', 'role:kepalaSekolah'])->put('/users/{id}/abse
 
 
     Route::prefix('laporan-absensi')
-        ->middleware('auth:sanctum', 'absensi.permission:guru')
-        ->group(function () {
-            Route::get('/excel', [LaporanAbsensiController::class, 'exportExcel']);
-            Route::get('/pdf', [LaporanAbsensiController::class, 'exportPdf']);
-        });
+    ->middleware('auth:sanctum', 'absensi.permission:guru')
+    ->group(function () {
+        Route::get('/', [LaporanAbsensiController::class, 'index']);    
+        Route::get('/user/{id}', [LaporanAbsensiController::class, 'showUser']);
+        Route::get('/excel', [LaporanAbsensiController::class, 'exportExcel']);
+        Route::get('/pdf', [LaporanAbsensiController::class, 'exportPdf']);
+    });
