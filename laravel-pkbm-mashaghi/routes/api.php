@@ -30,7 +30,9 @@ Route::middleware('auth:sanctum')->prefix('mutasi')->group(function () {
 });
 
     Route::get('/pengumuman',  [PengumumanController::class, 'index']);
+    Route::get('/pengumuman/{id}', [PengumumanController::class, 'show']);
     Route::post('/pengumuman', [PengumumanController::class, 'store']); 
+    Route::delete('/pengumuman/{id}', [PengumumanController::class, 'destroy']);
 
 
 Route::middleware('auth:sanctum')->group(function () {

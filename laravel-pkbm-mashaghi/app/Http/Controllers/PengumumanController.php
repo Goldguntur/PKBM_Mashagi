@@ -8,16 +8,15 @@ use Illuminate\Http\Request;
 
 class PengumumanController extends Controller
 {
-    // Ambil semua pengumuman + jumlah unread
     public function index(Request $request)
     {
-        // Ambil semua pengumuman global
+
+        Pengumuman::where('created_at', '<', now()->subDays(14))->delete();
+
         $global = Pengumuman::orderBy('created_at', 'desc')->get();
 
-        // Inisialisasi array personal notif
         $personal = collect([]);
 
-        // Kalau user login → ambil notif personal
         if ($request->user()) {
             $userId = $request->user()->id;
             $personal = UserNotification::where('user_id', $userId)
@@ -25,18 +24,13 @@ class PengumumanController extends Controller
                 ->get();
         }
 
-        // Gabungkan global + personal
         $pengumuman = $global->merge($personal)->sortByDesc('created_at')->values();
 
-        // Hitung unread
         $unreadCount = $pengumuman->where('is_read', false)->count();
 
-        // Kalau ada query reset → tandai semua dibaca
         if ($request->has('reset') && $request->reset == 1) {
-            // Reset global
             Pengumuman::where('is_read', false)->update(['is_read' => true]);
 
-            // Reset personal
             if ($request->user()) {
                 UserNotification::where('user_id', $request->user()->id)
                     ->where('is_read', false)
@@ -50,6 +44,13 @@ class PengumumanController extends Controller
             'data' => $pengumuman->values(),
             'unread_count' => $unreadCount
         ]);
+    }
+
+    public function show($id)
+    {
+        $pengumuman = Pengumuman::findOrFail($id);
+
+        return response()->json($pengumuman);
     }
 
     public function store(Request $request)
@@ -74,7 +75,6 @@ class PengumumanController extends Controller
         ], 201);
     }
 
-    // Reset badge (tandai semua dibaca)
     public function resetBadge()
     {
         Pengumuman::where('is_read', false)->update(['is_read' => true]);
@@ -85,4 +85,15 @@ class PengumumanController extends Controller
             'unread_count' => $unreadCount
         ]);
     }
+     
+    public function destroy($id)
+    {
+        $pengumuman = Pengumuman::findOrFail($id);
+        $pengumuman->delete();
+
+        return response()->json([
+            'message' => 'Pengumuman berhasil dihapus'
+        ]);
+    }
+
 }
