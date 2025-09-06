@@ -6,27 +6,40 @@ import {
   FlatList,
   TouchableOpacity,
   Dimensions,
+  Alert,
   Pressable,
   useWindowDimensions,
-  Linking,
-  ScrollView,
+  Platform,
 } from "react-native";
+
+import DateTimePicker from "@react-native-community/datetimepicker";
+import * as FileSystem from "expo-file-system";
+import * as Sharing from "expo-sharing";
 import { SceneMap, TabView } from "react-native-tab-view";
 import { AntDesign, Feather } from "@expo/vector-icons";
 import axios, { axiosUrl } from "~/utils/axios";
 import { useRouter } from "expo-router";
-import { PieChart, BarChart, ProgressChart } from "react-native-chart-kit";
+import { PieChart } from "react-native-chart-kit";
+import { getUserToken } from "@/lib/auth/authStorage";
 
+// 📌 Komponen list laporan
 const LaporanList = ({ role }: { role: "guru" | "tenagaPendidik" }) => {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-
   const router = useRouter();
 
   const fetchData = async () => {
     try {
       setLoading(true);
-      const res = await axios.get("/laporan-absensi", { params: { role } });
+      const token = await getUserToken();
+      if (!token) {
+        Alert.alert("Error", "Token tidak ditemukan, silakan login ulang.");
+        return;
+      }
+      const res = await axios.get("/laporan-absensi", {
+        params: { role },
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setData(res.data);
     } catch (err) {
       console.log("❌ Error fetch laporan:", err);
@@ -58,8 +71,6 @@ const LaporanList = ({ role }: { role: "guru" | "tenagaPendidik" }) => {
     { hadir: 0, sakit: 0, izin: 0, alpha: 0 }
   );
 
-  const totalHari = total.hadir + total.sakit + total.izin + total.alpha;
-
   const screenWidth = Dimensions.get("window").width;
 
   return (
@@ -71,34 +82,10 @@ const LaporanList = ({ role }: { role: "guru" | "tenagaPendidik" }) => {
           <Text className="text-xl font-bold mb-3">Statistik Kehadiran</Text>
           <PieChart
             data={[
-              {
-                name: "Hadir",
-                population: total.hadir,
-                color: "#22c55e",
-                legendFontColor: "#333",
-                legendFontSize: 14,
-              },
-              {
-                name: "Sakit",
-                population: total.sakit,
-                color: "#eab308",
-                legendFontColor: "#333",
-                legendFontSize: 14,
-              },
-              {
-                name: "Izin",
-                population: total.izin,
-                color: "#3b82f6",
-                legendFontColor: "#333",
-                legendFontSize: 14,
-              },
-              {
-                name: "Alpha",
-                population: total.alpha,
-                color: "#ef4444",
-                legendFontColor: "#333",
-                legendFontSize: 14,
-              },
+              { name: "Hadir", population: total.hadir, color: "#22c55e", legendFontColor: "#333", legendFontSize: 14 },
+              { name: "Sakit", population: total.sakit, color: "#eab308", legendFontColor: "#333", legendFontSize: 14 },
+              { name: "Izin", population: total.izin, color: "#3b82f6", legendFontColor: "#333", legendFontSize: 14 },
+              { name: "Alpha", population: total.alpha, color: "#ef4444", legendFontColor: "#333", legendFontSize: 14 },
             ]}
             width={screenWidth - 40}
             height={220}
@@ -123,26 +110,28 @@ const LaporanList = ({ role }: { role: "guru" | "tenagaPendidik" }) => {
         const persentase = ((item.hadir / (totalUser || 1)) * 100).toFixed(1);
 
         return (
-<TouchableOpacity
-  onPress={() => router.push({
-    pathname: "/kepala-sekolah/laporan-absensi/[id]",
-    params: { id: String(item.id) },
-  })}
-  className="bg-white px-4 py-3 border-b border-gray-200"
->
-  <Text className="text-lg font-semibold">{item.name}</Text>
+          <TouchableOpacity
+            onPress={() =>
+              router.push({
+                pathname: "/kepala-sekolah/laporan-absensi/[id]",
+                params: { id: String(item.id) },
+              })
+            }
+            className="bg-white px-4 py-3 border-b border-gray-200"
+          >
+            <Text className="text-lg font-semibold">{item.name}</Text>
 
-  <View className="mt-2 flex-row justify-between">
-    <Text className="text-green-600">Hadir: {item.hadir}</Text>
-    <Text className="text-yellow-600">Sakit: {item.sakit}</Text>
-    <Text className="text-blue-600">Izin: {item.izin}</Text>
-    <Text className="text-red-600">Alpha: {item.alpha}</Text>
-  </View>
+            <View className="mt-2 flex-row justify-between">
+              <Text className="text-green-600">Hadir: {item.hadir}</Text>
+              <Text className="text-yellow-600">Sakit: {item.sakit}</Text>
+              <Text className="text-blue-600">Izin: {item.izin}</Text>
+              <Text className="text-red-600">Alpha: {item.alpha}</Text>
+            </View>
 
-  <Text className="mt-2 text-gray-700">
-    Persentase Kehadiran Bulan Ini: {persentase}%
-  </Text>
-</TouchableOpacity>
+            <Text className="mt-2 text-gray-700">
+              Persentase Kehadiran Bulan Ini: {persentase}%
+            </Text>
+          </TouchableOpacity>
         );
       }}
     />
@@ -152,8 +141,7 @@ const LaporanList = ({ role }: { role: "guru" | "tenagaPendidik" }) => {
 const GuruRoute = () => <LaporanList role="guru" />;
 const TenagaPendidikRoute = () => <LaporanList role="tenagaPendidik" />;
 
-// Custom Tab Bar
-type Route = { key: string; title: string };
+// 📌 Tab Custom
 const CustomTabBar = ({ navigationState, jumpTo }: any) => {
   const width = Dimensions.get("window").width;
   const tabWidth = width / navigationState.routes.length;
@@ -164,7 +152,7 @@ const CustomTabBar = ({ navigationState, jumpTo }: any) => {
         {navigationState.routes.map((route: any, i: number) => {
           const focused = navigationState.index === i;
           return (
-            <Pressable
+            <TouchableOpacity
               key={route.key}
               onPress={() => jumpTo(route.key)}
               className="flex-1 items-center justify-center py-3"
@@ -178,13 +166,11 @@ const CustomTabBar = ({ navigationState, jumpTo }: any) => {
               >
                 {route.title}
               </Text>
-            </Pressable>
+            </TouchableOpacity>
           );
         })}
       </View>
-
       <View className="h-[2px] bg-gray-200" />
-
       <View
         style={{
           position: "absolute",
@@ -202,25 +188,73 @@ const CustomTabBar = ({ navigationState, jumpTo }: any) => {
 export default function LaporanAbsensiScreen() {
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
-  const [routes] = useState<Route[]>([
+  const [routes] = useState([
     { key: "guru", title: "Laporan Guru" },
     { key: "tenaga", title: "Laporan Tendik" },
   ]);
 
-  const renderScene = SceneMap({
-    guru: GuruRoute,
-    tenaga: TenagaPendidikRoute,
-  });
+  const [showPicker, setShowPicker] = useState(false);
+  const [pickerMode, setPickerMode] = useState<"harian" | "bulanan">("harian");
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const router = useRouter();
 
-  const handleDownload = (type: "excel" | "pdf") => {
-    const url = `${axiosUrl}/laporan-absensi/${type}`;
-    Linking.openURL(url);
+  // 📌 Fungsi download Excel
+  const handleDownloadExcel = async (mode: "harian" | "bulanan", date: Date) => {
+    try {
+      const token = await getUserToken();
+      if (!token) {
+        Alert.alert("Error", "Token tidak ditemukan, silakan login ulang.");
+        return;
+      }
+
+      let url = "";
+      let fileName = "";
+
+      if (mode === "harian") {
+  const tgl = date.toISOString().slice(0, 10);
+  url = `${axiosUrl}/laporan-absensi/export-harian?tanggal=${tgl}`;
+  fileName = `Absensi_Harian_${tgl}.xlsx`;
+} else {
+  const bulanParam = date.getMonth() + 1;
+  const tahunParam = date.getFullYear();
+  url = `${axiosUrl}/laporan-absensi/export-bulanan?bulan=${bulanParam}&tahun=${tahunParam}`;
+  fileName = `Absensi_Bulanan_${bulanParam}_${tahunParam}.xlsx`;
+}
+      const fileUri = FileSystem.documentDirectory + fileName;
+
+      const downloadResumable = FileSystem.createDownloadResumable(url, fileUri, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const result = await downloadResumable.downloadAsync();
+
+      if (result?.status === 200) {
+        if (await Sharing.isAvailableAsync()) {
+          await Sharing.shareAsync(result.uri);
+        } else {
+          Alert.alert(`Sukses, File tersimpan di: ${result.uri}`);
+        }
+      } else {
+        Alert.alert(`Gagal, Status: ${result?.status}`);
+      }
+    } catch (e: any) {
+      console.error("❌ Download failed:", e);
+      Alert.alert("Error", e.message);
+    }
+  };
+
+  const onDateChange = (event: any, date?: Date) => {
+    setShowPicker(false);
+    if (date) {
+      setSelectedDate(date);
+      handleDownloadExcel(pickerMode, date);
+    }
   };
 
   return (
     <View className="flex-1 bg-white">
+      {/* Header */}
       <View className="flex-row items-center bg-blue-600 px-4 py-4 shadow-md">
         <TouchableOpacity onPress={() => router.back()} className="mr-3">
           <AntDesign name="arrowleft" size={24} color="white" />
@@ -230,29 +264,49 @@ export default function LaporanAbsensiScreen() {
 
       <TabView
         navigationState={{ index, routes }}
-        renderScene={renderScene}
+        renderScene={SceneMap({
+          guru: GuruRoute,
+          tenaga: TenagaPendidikRoute,
+        })}
         onIndexChange={setIndex}
         initialLayout={{ width: layout.width }}
         renderTabBar={(props) => <CustomTabBar {...props} />}
       />
 
+      {/* Tombol aksi */}
       <View className="flex-row justify-center gap-4 px-4 py-8 border-t border-gray-200 bg-white">
         <TouchableOpacity
-          onPress={() => handleDownload("excel")}
+          onPress={() => {
+            setPickerMode("bulanan");
+            setShowPicker(true);
+          }}
           className="flex-row items-center bg-green-600 px-4 py-3 rounded-xl"
         >
           <Feather name="file-text" size={18} color="white" />
-          <Text className="text-white ml-2 font-semibold">Unduh Excel</Text>
+          <Text className="text-white ml-2 font-semibold">Unduh Excel Bulanan</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => handleDownload("pdf")}
-          className="flex-row items-center bg-red-600 px-4 py-3 rounded-xl"
+          onPress={() => {
+            setPickerMode("harian");
+            setShowPicker(true);
+          }}
+          className="flex-row items-center bg-blue-600 px-4 py-3 rounded-xl"
         >
-          <Feather name="file" size={18} color="white" />
-          <Text className="text-white ml-2 font-semibold">Unduh PDF</Text>
+          <Feather name="calendar" size={18} color="white" />
+          <Text className="text-white ml-2 font-semibold">Unduh Excel Harian</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Date Picker */}
+      {showPicker && (
+        <DateTimePicker
+          value={selectedDate}
+          mode="date"
+          display={Platform.OS === "ios" ? "inline" : "calendar"}
+          onChange={onDateChange}
+        />
+      )}
     </View>
   );
 }

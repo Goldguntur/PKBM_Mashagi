@@ -19,8 +19,6 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
         $middleware->alias([
             'role' => RoleMiddleware::class,  //register new role middleware
-        ]);
-         $middleware->alias([
             'absensi.permission' => AbsensiPermission::class,
         ]);
     })

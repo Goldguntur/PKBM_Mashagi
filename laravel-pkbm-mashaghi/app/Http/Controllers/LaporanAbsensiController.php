@@ -6,7 +6,9 @@ use PDF;
 use App\Exports\AbsensiExport;
 use App\Models\AbsensiGuruTendik;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 
 class LaporanAbsensiController extends Controller
@@ -111,25 +113,18 @@ public function showUser($id, Request $request)
     ]);
 }
 
-    public function exportExcel(Request $request)
+ public function exportHarian(Request $request)
     {
-        $bulan = $request->bulan ?? now()->month;
-        $tahun = $request->tahun ?? now()->year;
-
-        return Excel::download(new AbsensiExport($bulan, $tahun), "laporan-absensi-$bulan-$tahun.xlsx");
+        $tanggal = $request->input('tanggal', Carbon::now()->toDateString());
+        return Excel::download(new AbsensiExport('harian', $tanggal), "Absensi_Harian_{$tanggal}.xlsx");
     }
 
-    public function exportPdf(Request $request)
+    public function exportBulanan(Request $request)
     {
-        $bulan = $request->bulan ?? now()->month;
-        $tahun = $request->tahun ?? now()->year;
+        $bulan = $request->input('bulan', Carbon::now()->month);
+        $tahun = $request
+        ->input('tahun', Carbon::now()->year);
 
-        $rekap = AbsensiGuruTendik::with('user')
-            ->whereMonth('tanggal', $bulan)
-            ->whereYear('tanggal', $tahun)
-            ->get();
-
-        $pdf = FacadePdf::loadView('exports.absensi_pdf', compact('rekap', 'bulan', 'tahun'));
-        return $pdf->download("laporan-absensi-$bulan-$tahun.pdf");
+        return Excel::download(new AbsensiExport('bulanan', null, $bulan, $tahun), "Absensi_Bulanan_{$bulan}_{$tahun}.xlsx");
     }
 }

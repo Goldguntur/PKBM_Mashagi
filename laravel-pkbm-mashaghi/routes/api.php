@@ -75,11 +75,13 @@ Route::prefix('absensi-guru-tendik')
 Route::middleware(['auth:sanctum', 'role:kepalaSekolah'])->put('/users/{id}/absensi_guruTendik', [UserController::class, 'setAbsensiManager']);
 
 
-    Route::prefix('laporan-absensi')
-    ->middleware('auth:sanctum', 'absensi.permission:guru')
-    ->group(function () {
-        Route::get('/', [LaporanAbsensiController::class, 'index']);    
-        Route::get('/user/{id}', [LaporanAbsensiController::class, 'showUser']);
-        Route::get('/excel', [LaporanAbsensiController::class, 'exportExcel']);
-        Route::get('/pdf', [LaporanAbsensiController::class, 'exportPdf']);
+Route::prefix('laporan-absensi')
+->middleware('auth:sanctum', 'absensi.permission:guru')
+->group(function () {
+    Route::get('/', [LaporanAbsensiController::class, 'index']);    
+    Route::get('/pdf', [LaporanAbsensiController::class, 'exportPdf']);
+    Route::get('/excel', [LaporanAbsensiController::class, 'exportExcel']);
+     Route::get('/export-harian', [LaporanAbsensiController::class, 'exportHarian']);
+    Route::get('/export-bulanan', [LaporanAbsensiController::class, 'exportBulanan']);
+    Route::get('/user/{id}', [LaporanAbsensiController::class, 'showUser']);
     });
