@@ -16,11 +16,12 @@ class UserController extends Controller
         }
 
         return response()->json($query->get());
-    }
+     }
+
 
     public function show($id)
     {
-        $user = User::findOrFail($id);
+        $user = User::with('kelas', 'mapels')->findOrFail($id);
         return response()->json($user);
     }
 

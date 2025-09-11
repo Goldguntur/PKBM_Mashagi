@@ -12,13 +12,21 @@ class Kelas extends Model
     protected $table = 'kelas';
     protected $fillable = ['nama_kelas'];
 
+    // siswa dalam kelas
     public function users()
     {
         return $this->hasMany(User::class, 'kelas_id');
     }
+    
 
     public function mapels()
     {
-        return $this->belongsToMany(Mapel::class, 'kelas_id');
+        return $this->belongsToMany(Mapel::class, 'kelas_mapel', 'kelas_id', 'mapel_id');
+    }
+
+
+    public function guru()
+    {
+        return $this->belongsToMany(User::class, 'guru_kelas', 'kelas_id', 'guru_id');
     }
 }

@@ -16,13 +16,10 @@ return new class extends Migration {
             $table->string('no_wa')->nullable();
             $table->string('nisn')->nullable()->unique();
             $table->string('nik')->nullable()->unique();
-
             $table->date('tanggal_lahir')->nullable();
-
             $table->string('password');
             $table->string('role')->nullable();
-            $table->boolean('absensi_guruTendik')->default(false)->nullable();
-
+            $table->boolean('absensi_guruTendik')->default(false);
             $table->foreignId('kelas_id')->nullable()->constrained('kelas')->onDelete('set null');
             $table->rememberToken();
             $table->timestamps();

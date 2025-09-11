@@ -15,6 +15,8 @@ class Mapel extends Model
         'deskripsi',
     ];
 
+    protected $table = 'mapels';
+
     public function guru()
     {
         return $this->belongsToMany(User::class, 'guru_mapel', 'mapel_id', 'guru_id');

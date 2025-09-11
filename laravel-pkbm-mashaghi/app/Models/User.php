@@ -20,7 +20,6 @@ class User extends Authenticatable
         'nisn',
         'nik',
         'kelas_id',
-        'mapel_ids',
         'tanggal_lahir',
         'password',
         'role',
@@ -34,17 +33,26 @@ class User extends Authenticatable
     ];
 
     protected $casts = [
-        'mapel_ids' => 'array',
-        'absensi_guruTendik' => 'boolean'
+        'absensi_guruTendik' => 'boolean',
     ];
 
-     public function kelas()
+    public function kelas()
     {
-        return $this->belongsTo(Kelas::class, 'kelas_id');
+        return $this->belongsTo(Kelas::class, 'kelas_id')->withDefault();
     }
 
-   public function mapels()
-{
-    return $this->belongsToMany(Mapel::class, 'guru_mapel', 'guru_id', 'mapel_id');
-}
+    public function mapels()
+    {
+        return $this->belongsToMany(Mapel::class, 'guru_mapel', 'guru_id', 'mapel_id');
+    }
+
+    public function kelasMengajar()
+    {
+        return $this->belongsToMany(Kelas::class, 'guru_kelas', 'guru_id', 'kelas_id');
+    }
+
+    public function getMapelKelasAttribute()
+    {
+        return $this->kelas ? $this->kelas->mapels : collect([]);
+    }
 }

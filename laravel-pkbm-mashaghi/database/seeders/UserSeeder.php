@@ -11,115 +11,121 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         User::create([
-            'name' => 'Pak Kepala',
-            'username' => 'kepsek01',
-            'email' => 'kepala@example.com',
+            'name' => 'Klein Moretti',
+            'username' => 'klein01',
+            'email' => 'klein@example.com',
             'password' => Hash::make('password123'),
-            'no_wa' => '081234567890',
+            'no_wa' => '081111111111',
             'nisn' => null,
-            'nik' => '3276012309870001',
+            'nik' => '3276012309871001',
             'role' => 'kepalaSekolah',
             'kelas_id' => null,
         ]);
 
         User::create([
-            'name' => 'Bu TU',
-            'username' => 'tuperson',
-            'email' => 'tu@example.com',
+            'name' => 'Daly Simon',
+            'username' => 'tu_daly',
+            'email' => 'daly@example.com',
             'password' => Hash::make('password123'),
-            'no_wa' => '081234567891',
+            'no_wa' => '081111111112',
             'nisn' => null,
-            'nik' => '3276012309870002',
+            'nik' => '3276012309871002',
             'role' => 'tenagaPendidik',
             'kelas_id' => null,
         ]);
 
-        $guru = User::create([
-            'name' => 'Pak Adrian',
-            'username' => 'guru01',
-            'email' => 'guru@example.com',
+        $guru1 = User::create([
+            'name' => 'Roselle Gustav',
+            'username' => 'guru_roselle',
+            'email' => 'roselle@example.com',
             'password' => Hash::make('password123'),
-            'no_wa' => '081234567892',
+            'no_wa' => '081111111113',
             'nisn' => null,
-            'nik' => '3276012309870003',
+            'nik' => '3276012309871003',
+            'role' => 'guru',
+            'absensi_guruTendik' => true,
+        ]);
+        $guru1->mapels()->attach([1, 2]); 
+        $guru1->kelasMengajar()->attach([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+
+        $guru2 = User::create([
+            'name' => 'Zaratul',
+            'username' => 'guru_zaratul',
+            'email' => 'zaratul@example.com',
+            'password' => Hash::make('password123'),
+            'no_wa' => '081111111114',
+            'nisn' => null,
+            'nik' => '3276012309871004',
             'role' => 'guru',
             'absensi_guruTendik' => false,
             'kelas_id' => null,
         ]);
-        $guru->mapels()->attach([1, 2]);
+        $guru2->mapels()->attach([3]); // IPS
 
-        $guruManager = User::create([
-    'name' => 'Pak Rizki',
-    'username' => 'guruManager',
-    'email' => 'gurumanager@example.com',
-    'password' => Hash::make('password123'),
-    'no_wa' => '081234567896',
-    'nisn' => null,
-    'nik' => '3276012309870005',
-    'role' => 'guru',
-    'kelas_id' => null,
-    'absensi_guruTendik' => true, 
-        ]);
-        $guruManager->mapels()->attach([1]);
-
-        $guruKeluar = User::create([
-            'name' => 'Miss Tia',
-            'username' => 'guruKeluar',
-            'email' => 'gurukeluar@example.com',
+        $guru3 = User::create([
+            'name' => 'Hermes',
+            'username' => 'guru_hermes',
+            'email' => 'hermes@example.com',
             'password' => Hash::make('password123'),
-            'no_wa' => '081234567899',
+            'no_wa' => '081111111115',
             'nisn' => null,
-            'nik' => '3276012309870004',
+            'nik' => '3276012309871005',
             'role' => 'guru',
             'absensi_guruTendik' => false,
             'kelas_id' => null,
         ]);
-        $guruKeluar->mapels()->attach([3]);
+        $guru3->mapels()->attach([4, 5]);
 
-        User::create([
-            'name' => 'Siswa A',
-            'username' => 'murid01',
-            'email' => 'murid01@example.com',
+        $guru4 = User::create([
+            'name' => 'Amon',
+            'username' => 'guru_amon',
+            'email' => 'amon@example.com',
             'password' => Hash::make('password123'),
-            'no_wa' => '081234567893',
-            'nisn' => '20230101',
-            'role' => 'pesertaDidik',
-            'kelas_id' => 1, 
+            'no_wa' => '081111111116',
+            'nisn' => null,
+            'nik' => '3276012309871006',
+            'role' => 'guru',
+            'absensi_guruTendik' => false,
+            'kelas_id' => null,
         ]);
+        $guru4->mapels()->attach([6]); // Agama
 
-        User::create([
-            'name' => 'Siswa B',
-            'username' => 'murid02',
-            'email' => 'murid02@example.com',
-            'password' => Hash::make('password123'),
-            'no_wa' => '081234567894',
-            'nisn' => '10230102',
-            'role' => 'pesertaDidik',
-            'kelas_id' => 4, // Paket B Kelas 7
-        ]);
+        // ==== SISWA ====
+        $siswas = [
+            'Audrey Hall',
+            'Alger Wilson',
+            'Cattleya',
+            'Leonard Mitchell',
+            'Fors Wall',
+            'Xio Derecha',
+            'Emlyn White',
+            'Sharron',
+            'Danitz',
+            'Anderson Hood',
+            'Will Auceptin',
+            'Miss Justice',
+            'Mr Hanged Man',
+            'Mr World',
+            'Miss Magician',
+            'Mr Tower',
+            'Miss Moon',
+            'Mr Sun',
+            'Miss Hermit',
+        ];
 
-        // Murid untuk lulus
-        User::create([
-            'name' => 'Siswa C',
-            'username' => 'murid03',
-            'email' => 'murid03@example.com',
-            'password' => Hash::make('password123'),
-            'no_wa' => '081234567895',
-            'nisn' => '20230103',
-            'role' => 'pesertaDidik',
-            'kelas_id' => 7, // Paket C Kelas 10
-        ]);
-
-        // Murid untuk keluar
-        User::create([
-            'name' => 'Siswa D',
-            'username' => 'murid04',
-            'email' => 'murid04@example.com',
-            'password' => Hash::make('password123'),
-            'no_wa' => '081234561125',
-            'nisn' => '20230104',
-            'role' => 'pesertaDidik',
-            'kelas_id' => 7, // Paket C Kelas 10
-        ]);
+        $i = 1;
+        foreach ($siswas as $s) {
+            User::create([
+                'name' => $s,
+                'username' => 'murid' . $i,
+                'email' => 'murid' . $i . '@example.com',
+                'password' => Hash::make('password123'),
+                'no_wa' => '0811111111' . str_pad($i, 2, '0', STR_PAD_LEFT),
+                'nisn' => '20230' . str_pad($i, 3, '0', STR_PAD_LEFT),
+                'role' => 'pesertaDidik',
+                'kelas_id' => rand(1, 9), // random kelas
+            ]);
+            $i++;
+        }
     }
 }

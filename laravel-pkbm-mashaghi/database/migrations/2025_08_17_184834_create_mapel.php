@@ -16,7 +16,6 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // pivot table antara guru dan mapel
         Schema::create('guru_mapel', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('guru_id');

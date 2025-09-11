@@ -9,6 +9,8 @@ export interface User {
   id: number;
   name: string;
   email: string;
+  kelas: Kelas;
+  mapels: Mapel[];
   role: RoleKey;
 }
 
@@ -31,31 +33,24 @@ export type MutasiJenis =
   | "guru_keluar"
   | "tendik_keluar";
 
-// Create Axios instance
 const API = axios.create({ baseURL: axiosUrl });
 
-// Add token dynamically for each request
 API.interceptors.request.use(async (config) => {
   const token = await getUserToken();
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
 
-// -------------------- Users --------------------
 
-// Fetch all users by role
 export const fetchUsersByRole = async (role: RoleKey): Promise<User[]> => {
   const { data } = await API.get(`/users?role=${role}`);
   return data;
 };
 
 export async function fetchUserDetail(id: number) {
-  console.log("Searching Fetch user detail:", id); // id yang dilempar
   const res = await instance.get(`/users/${id}`);
-  console.log("Good Response fetchUserDetail:", res.data);
   return res.data;
 }
-// -------------------- Kelas --------------------
 
 export async function fetchKelas() {
   console.log("🔍 Fetch kelas");
@@ -71,12 +66,11 @@ export async function fetchMapels() {
   return res.data;
 }
 
-// Create new mutasi
 export const buatMutasi = async (payload: {
   user_id: number;
   jenis: MutasiJenis;
   kelas_tujuan_id?: number | null;
-  mapel_tujuan_id?: number | null;
+  mapel_tujuan_id?: number[] | null;
   alasan?: string | null;
 }) => {
   const { data } = await API.post("/mutasi", payload);

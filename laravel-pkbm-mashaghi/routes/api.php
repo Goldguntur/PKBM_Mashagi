@@ -9,14 +9,15 @@ use App\Http\Controllers\PengumumanController;
 use App\Http\Controllers\MutasiController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AbsensiGuruTendikController;
+use App\Http\Controllers\AbsensiMuridController;
 use App\Http\Controllers\LaporanAbsensiController;
+use App\Http\Controllers\LaporanAbsensiMuridController;
 
 Route::middleware('auth:sanctum')->get('/user', fn (Request $request) => $request->user());
-Route::middleware('auth:sanctum')->get('/me', fn (Request $request) => $request->user());
-
+Route::get('/test-relasi-guru/{id}', [AuthController::class, 'testRelasiGuru']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login',    [AuthController::class, 'login']);
-
+Route::middleware('auth:sanctum')->get('/me', [AuthController::class, 'me']);
 
 Route::get('/mapel', [MapelController::class, 'index']);
 
@@ -44,15 +45,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::get('/guru/{id}', [AuthController::class, 'showGuru']);
 
-// Route::middleware(['auth:sanctum'])->group(function () {
-//     Route::get('/users', [MutasiController::class, 'index']); 
-//     Route::put('/users/{id}/mutasi', [MutasiController::class, 'mutasi']); 
-// });
-
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
     Route::post('/mapel',           [MapelController::class, 'store']);
+    Route::get('/mapel/{id}/kelas', [MapelController::class, 'mapelKelas']);
+    Route::get('/kelas/{id}/mapel', [MapelController::class, 'kelasMapel']);
     Route::get('/mapel/{id}',       [MapelController::class, 'show']);
     Route::put('/mapel/{id}',       [MapelController::class, 'update']);
     Route::delete('/mapel/{id}',    [MapelController::class, 'destroy']);
@@ -81,7 +79,21 @@ Route::prefix('laporan-absensi')
     Route::get('/', [LaporanAbsensiController::class, 'index']);    
     Route::get('/pdf', [LaporanAbsensiController::class, 'exportPdf']);
     Route::get('/excel', [LaporanAbsensiController::class, 'exportExcel']);
-     Route::get('/export-harian', [LaporanAbsensiController::class, 'exportHarian']);
+    Route::get('/export-harian', [LaporanAbsensiController::class, 'exportHarian']);
     Route::get('/export-bulanan', [LaporanAbsensiController::class, 'exportBulanan']);
     Route::get('/user/{id}', [LaporanAbsensiController::class, 'showUser']);
     });
+
+    Route::middleware('auth:sanctum')->group(function () {
+    Route::prefix('absensi-murid')->group(function () {
+        Route::get('/', [AbsensiMuridController::class, 'index']);
+        Route::post('/', [AbsensiMuridController::class, 'store']); 
+        Route::put('/{id}', [AbsensiMuridController::class, 'updateStatus']); 
+        Route::get('/show/{murid_id}', [AbsensiMuridController::class, 'show']);
+    });
+
+    Route::prefix('laporan-murid')->group(function () {
+        Route::get('/', [LaporanAbsensiMuridController::class, 'index']); 
+        Route::get('/{id}', [LaporanAbsensiMuridController::class, 'showMurid']); 
+    });
+});

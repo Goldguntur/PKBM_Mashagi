@@ -17,12 +17,10 @@ class AbsensiPermission
 
         switch ($type) {
             case 'guru':
-                // Kepala Sekolah otomatis boleh
                 if ($user->role === 'kepalaSekolah') {
                     return $next($request);
                 }
 
-                // Guru diperbolehkan jika punya relasi absensi_guruTendik
                 if ($user->role === 'guru' && $user->absensi_guruTendik) {
                     return $next($request);
                 }

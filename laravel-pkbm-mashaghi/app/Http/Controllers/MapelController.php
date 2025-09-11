@@ -2,16 +2,70 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Kelas;
 use App\Models\Mapel;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class MapelController extends Controller
 {
+
     public function index()
     {
         $mapel = Mapel::with('guru')->get();
         return response()->json($mapel);
+    }
+    
+     public function mapelKelas($mapel_id)
+    {
+        $guru = Auth::user();
+
+        if ($guru->role !== 'guru') {
+            return response()->json(['message' => 'Hanya guru yang bisa mengakses'], 403);
+        }
+
+        // Pastikan guru mengajar mapel ini
+        if (!$guru->mapels->pluck('id')->contains($mapel_id)) {
+            return response()->json(['message' => 'Guru tidak mengajar mapel ini'], 403);
+        }
+
+        $mapel = Mapel::with(['kelas' => function ($q) use ($guru) {
+            $q->whereIn('kelas.id', $guru->kelasMengajar->pluck('id'));
+        }])->findOrFail($mapel_id);
+
+        return response()->json([
+            'mapel' => [
+                'id' => $mapel->id,
+                'nama_mapel' => $mapel->nama_mapel,
+            ],
+            'kelas' => $mapel->kelas
+        ]);
+    }
+
+    public function kelasMapel($kelas_id)
+    {
+        $guru = Auth::user();
+
+        if ($guru->role !== 'guru') {
+            return response()->json(['message' => 'Hanya guru yang bisa mengakses'], 403);
+        }
+
+        if (!$guru->kelasMengajar->pluck('id')->contains($kelas_id)) {
+            return response()->json(['message' => 'Guru tidak mengajar di kelas ini'], 403);
+        }
+
+        $kelas = Kelas::with(['mapels' => function ($q) use ($guru) {
+            $q->whereIn('mapels.id', $guru->mapels->pluck('id'));
+        }])->findOrFail($kelas_id);
+
+        return response()->json([
+            'kelas' => [
+                'id' => $kelas->id,
+                'nama_kelas' => $kelas->nama_kelas,
+            ],
+            'mapels' => $kelas->mapels
+        ]);
     }
 
     public function store(Request $request)
@@ -64,6 +118,7 @@ class MapelController extends Controller
 
         return response()->json(['message' => 'Guru berhasil ditambahkan ke mapel']);
     }
+
 
     public function unassignGuru(Request $request, $mapelId)
     {

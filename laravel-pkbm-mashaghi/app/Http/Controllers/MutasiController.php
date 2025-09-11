@@ -22,63 +22,69 @@ class MutasiController extends Controller
         return response()->json($mutasi);
     }
 
-    // Buat mutasi dan langsung setujui
-    public function store(Request $request)
+ public function store(Request $request)
     {
-        $this->authorizeKepsek();
-
         $validated = $request->validate([
-            'user_id'        => 'required|exists:users,id',
-            'jenis'          => 'required|string',
-            'kelas_tujuan_id'=> 'nullable|exists:kelas,id',
-            'mapel_tujuan_id'=> 'nullable|exists:mapels,id',
+            'user_id'          => 'required|exists:users,id',
+            'jenis'            => 'required|string',
+            'kelas_tujuan_id'  => 'nullable|exists:kelas,id',
+            'mapel_tujuan_id'  => 'nullable|array',             
+            'mapel_tujuan_id.*'=> 'exists:mapels,id',           
+            'alasan'           => 'nullable|string',
         ]);
 
-        $user = User::withTrashed()->findOrFail($validated['user_id']);
-        $kelasAsal = $user->kelas_id;
+        $user = User::findOrFail($validated['user_id']);
 
+        // Buat record mutasi
         $mutasi = Mutasi::create([
-            'user_id'         => $validated['user_id'],
+            'user_id'         => $user->id,
             'jenis'           => $validated['jenis'],
-            'kelas_asal_id'   => $kelasAsal,
             'kelas_tujuan_id' => $validated['kelas_tujuan_id'] ?? null,
-            'mapel_tujuan_id' => $validated['mapel_tujuan_id'] ?? null,
-            'status'          => 'disetujui',
+            'alasan'          => $validated['alasan'] ?? null,
         ]);
 
-        // Jalankan logika mutasi langsung
+        // Proses mutasi sesuai jenis
         switch ($validated['jenis']) {
             case 'murid_pindah_kelas':
             case 'murid_naik_kelas':
-                $user->kelas_id = $validated['kelas_tujuan_id'] ?? null;
+                if (!empty($validated['kelas_tujuan_id'])) {
+                    $user->kelas_id = $validated['kelas_tujuan_id'];
+                    $user->save();
+                }
                 break;
 
             case 'murid_lulus':
+                $user->status = 'lulus';
+                $user->save();
+                break;
+
             case 'murid_keluar':
-            case 'guru_keluar':
-            case 'tendik_keluar':
-                $user->delete(); // soft delete
+                $user->status = 'keluar';
+                $user->save();
                 break;
 
             case 'guru_pindah_mapel':
                 if (!empty($validated['mapel_tujuan_id'])) {
-                    $user->mapels()->sync([$validated['mapel_tujuan_id']]);
+                    // sync array mapel tujuan
+                    $user->mapels()->sync($validated['mapel_tujuan_id']);
                 }
+                break;
+
+            case 'guru_keluar':
+                $user->status = 'keluar';
+                $user->save();
+                break;
+
+            case 'tendik_keluar':
+                $user->status = 'keluar';
+                $user->save();
                 break;
         }
 
-        if ($user->exists) {
-            $user->save();
-        }
-
-        $this->simpanHistori($mutasi, $user, 'disetujui');
-
         return response()->json([
-            'message' => 'Mutasi berhasil dan langsung disetujui',
-            'mutasi'  => $mutasi
-        ], 201);
+            'mutasi' => $mutasi->load('kelasTujuan', 'user', 'user.mapels'),
+        ]);
     }
-
     // Detail mutasi
     public function show($id)
     {

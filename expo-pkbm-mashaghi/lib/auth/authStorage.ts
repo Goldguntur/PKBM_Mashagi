@@ -11,6 +11,8 @@ export type User = {
   tanggal_lahir?: any;
   username: string;
   password?: string;
+  absensi_guruTendik?: boolean;
+  mapels?: any[];
   role: "kepalaSekolah" | "guru" | "pesertaDidik" | "tenagaPendidik";
 };
 

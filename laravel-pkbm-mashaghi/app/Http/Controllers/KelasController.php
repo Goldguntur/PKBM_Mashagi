@@ -12,5 +12,4 @@ class KelasController extends Controller
         $kelas = Kelas::with('users')->get();
         return response()->json($kelas);
     }
-
 }

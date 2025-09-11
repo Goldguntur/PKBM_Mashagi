@@ -16,6 +16,8 @@ import { AntDesign } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { MultiSelect } from "react-native-element-dropdown";
 
+import Checkbox from 'expo-checkbox'
+
 export default function Register() {
   const router = useRouter();
 
@@ -57,9 +59,18 @@ export default function Register() {
     { id: 9, label: "Paket C Kelas 12" },
   ];
 
+  const [absensiGuruTendik, setAbsensiGuruTendik] = useState(false);
+
+  const handleCheckboxChange = () => {
+        setAbsensiGuruTendik(!absensiGuruTendik);
+  };
+  
+  
+
   useEffect(() => {
     (async () => {
       try {
+        console.log(absensiGuruTendik)
         const res = await axios.get("/mapel");
         const items = Array.isArray(res.data) ? res.data : [];
         setMapelList(
@@ -101,7 +112,6 @@ export default function Register() {
 
     try {
       setLoading(true);
-
       const payload: any = {
         email,
         password,
@@ -115,6 +125,7 @@ export default function Register() {
         no_wa: noWa,
         name,
         tanggal_lahir: tanggalLahir.toISOString().split("T")[0],
+        absensi_guruTendik: absensiGuruTendik
       };
 
       console.log("Register payload:", payload);
@@ -122,7 +133,7 @@ export default function Register() {
       await register(payload);
 
       Alert.alert("Berhasil", "Registrasi berhasil.", [
-        { text: "OK", onPress: () => router.back() },
+        { text: "OK" },
       ]);
     } catch (err: any) {
       const data = err?.response?.data || {};
@@ -143,8 +154,8 @@ export default function Register() {
 
   return (
     <View className="flex-1 bg-white">
-      <View className="absolute top-0 left-0 right-0 z-10 pt-4 px-4">
-        <TouchableOpacity onPress={() => router.back()}>
+      <View className="absolute bg-white top-0 left-0 right-0 z-10 pt-4 px-4">
+        <TouchableOpacity onPress={() => router.back()} className="mr-3 mt-4">
           <AntDesign name="arrowleft" size={24} color="black" />
         </TouchableOpacity>
           <View className="flex-1 justify-center">
@@ -241,6 +252,12 @@ export default function Register() {
             </Picker>
           </View>
 
+{role === "guru" && (
+  <View>
+  <Checkbox value={absensiGuruTendik} onValueChange={handleCheckboxChange} style={{marginBottom: 16}} />
+  <Text className="text-white mb-1">Absensi Guru Tendik</Text>
+  </View>
+)}
 
 
 {role === "guru" && (
