@@ -61,7 +61,6 @@ class PengumumanController extends Controller
             'tanggal' => 'required|date',
         ]);
 
-        // default is_read = false
         $pengumuman = Pengumuman::create(array_merge($validated, [
             'is_read' => false
         ]));

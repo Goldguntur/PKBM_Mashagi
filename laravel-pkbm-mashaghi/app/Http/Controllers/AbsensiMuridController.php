@@ -60,8 +60,8 @@ class AbsensiMuridController extends Controller
 
         $request->validate([
             'murid_id' => 'required|exists:users,id',
-            'kelas_id' => 'required|exists:kelas,id',
-            'mapel_id' => 'required|exists:mapels,id',
+            'kelas_id' => 'nullable|exists:kelas,id',
+            'mapel_id' => 'nullable|exists:mapels,id',
             'status'   => 'required|in:hadir,izin,sakit,alpha',
         ]);
 

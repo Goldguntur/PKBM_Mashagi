@@ -22,7 +22,6 @@ import { useRouter } from "expo-router";
 import { PieChart } from "react-native-chart-kit";
 import { getUserToken } from "@/lib/auth/authStorage";
 
-// 📌 Komponen list laporan
 const LaporanList = ({ role }: { role: "guru" | "tenagaPendidik" }) => {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -199,7 +198,6 @@ export default function LaporanAbsensiGuruTendikScreen() {
 
   const router = useRouter();
 
-  // 📌 Fungsi download Excel
   const handleDownloadExcel = async (mode: "harian" | "bulanan", date: Date) => {
     try {
       const token = await getUserToken();
@@ -273,7 +271,6 @@ export default function LaporanAbsensiGuruTendikScreen() {
         renderTabBar={(props) => <CustomTabBar {...props} />}
       />
 
-      {/* Tombol aksi */}
       <View className="flex-row justify-center gap-4 px-4 py-8 border-t border-gray-200 bg-white">
         <TouchableOpacity
           onPress={() => {
@@ -298,7 +295,6 @@ export default function LaporanAbsensiGuruTendikScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Date Picker */}
       {showPicker && (
         <DateTimePicker
           value={selectedDate}

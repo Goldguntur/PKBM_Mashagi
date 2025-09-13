@@ -93,7 +93,10 @@ Route::prefix('laporan-absensi')
     });
 
     Route::prefix('laporan-murid')->group(function () {
-        Route::get('/', [LaporanAbsensiMuridController::class, 'index']); 
-        Route::get('/{id}', [LaporanAbsensiMuridController::class, 'showMurid']); 
-    });
+    Route::get('/', [LaporanAbsensiMuridController::class, 'index']);
+    Route::get('/export-harian', [LaporanAbsensiMuridController::class, 'exportHarian']);
+    Route::get('/export-bulanan', [LaporanAbsensiMuridController::class, 'exportBulanan']);
+    Route::post('/', [LaporanAbsensiMuridController::class, 'laporanMurid']);
+    Route::get('/{id}', [LaporanAbsensiMuridController::class, 'showMurid']);
+});
 });

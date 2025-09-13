@@ -152,7 +152,6 @@ export default function MutasiDetail() {
         />
       </View>
 
-      {/* Murid Section */}
       {user.role === "pesertaDidik" && (
         <>
           <Text className="font-semibold text-gray-700 mb-3">
@@ -206,7 +205,6 @@ export default function MutasiDetail() {
         </>
       )}
 
-      {/* Guru Section */}
       {user.role === "guru" && (
         <>
           <Text className="font-semibold text-gray-700 mb-3">

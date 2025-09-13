@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Auth;
 
 class MutasiController extends Controller
 {
-    // List semua mutasi
     public function index()
     {
         $this->authorizeKepsek();
@@ -35,7 +34,6 @@ class MutasiController extends Controller
 
         $user = User::findOrFail($validated['user_id']);
 
-        // Buat record mutasi
         $mutasi = Mutasi::create([
             'user_id'         => $user->id,
             'jenis'           => $validated['jenis'],
@@ -43,7 +41,6 @@ class MutasiController extends Controller
             'alasan'          => $validated['alasan'] ?? null,
         ]);
 
-        // Proses mutasi sesuai jenis
         switch ($validated['jenis']) {
             case 'murid_pindah_kelas':
             case 'murid_naik_kelas':
@@ -65,7 +62,6 @@ class MutasiController extends Controller
 
             case 'guru_pindah_mapel':
                 if (!empty($validated['mapel_tujuan_id'])) {
-                    // sync array mapel tujuan
                     $user->mapels()->sync($validated['mapel_tujuan_id']);
                 }
                 break;

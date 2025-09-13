@@ -109,7 +109,6 @@ export default function AbsensiKelas() {
 
   return (
     <View className="bg-white flex-1">
-      {/* Header */}
       <View className="flex-row items-center bg-blue-600 px-4 py-4 shadow-md elevation-4">
         <TouchableOpacity onPress={() => router.back()} className="mr-3">
           <AntDesign name="arrowleft" size={24} color="white" />
@@ -156,7 +155,6 @@ export default function AbsensiKelas() {
                 )}
               </View>
 
-              {/* Tombol absen kalau belum absen */}
               {!hasAttendance && (
                 <View className="flex-row mt-3">
                   {["hadir", "izin", "sakit", "alpha"].map((status, idx) => {

@@ -18,12 +18,12 @@ interface Mapel {
 }
 
 const faseMap: Fase[] = [
-  { label: "Fase A", kelas_id: 1 },
-  { label: "Fase B", kelas_id: 2 },
-  { label: "Fase C", kelas_id: 3 },
+  { label: "Kelas 7", kelas_id: 4 },
+  { label: "Kelas 8", kelas_id: 5 },
+  { label: "Kelas 9", kelas_id: 6 },
 ];
 
-export default function AbsensiMuridA() {
+export default function AbsensiMuridB() {
   const router = useRouter();
   const [mapels, setMapels] = useState<Mapel[]>([]);
   const [selectedMapel, setSelectedMapel] = useState<number | null>(null);

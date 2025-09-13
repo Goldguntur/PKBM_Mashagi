@@ -159,7 +159,7 @@ export default function Register() {
           <AntDesign name="arrowleft" size={24} color="black" />
         </TouchableOpacity>
           <View className="flex-1 justify-center">
-            <Text className="text-xl text-center font-bold mr-4 text-black">Buat Pengumuman</Text>  
+            <Text className="text-xl text-center font-bold mr-4 text-black">Buat User</Text>  
           </View>
       </View>
 
@@ -253,7 +253,7 @@ export default function Register() {
           </View>
 
 {role === "guru" && (
-  <View>
+  <View className="flex-row items-center gap-2">
   <Checkbox value={absensiGuruTendik} onValueChange={handleCheckboxChange} style={{marginBottom: 16}} />
   <Text className="text-white mb-1">Absensi Guru Tendik</Text>
   </View>

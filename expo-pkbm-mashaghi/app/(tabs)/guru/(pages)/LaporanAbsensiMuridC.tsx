@@ -179,7 +179,7 @@ const LaporanList = ({
 
         return (
           <TouchableOpacity
-            className="bg-white border-b border-gray-100 px-4 py-3"
+                   className="bg-white border-b border-gray-100 px-4 py-3"
   onPress={() =>
     router.push({
       pathname: "/guru/LaporanMurid/[id]",
@@ -189,7 +189,7 @@ const LaporanList = ({
         mapel_id: mapelId ?? "",
       },
     })
-  }
+  } 
           >
             <Text className="text-base font-bold mb-2">{item.name}</Text>
 
@@ -243,16 +243,16 @@ export default function LaporanAbsensiMuridScreen() {
       const kelasData: Kelas[] = kelasRes.data || [];
       const mapelData: Mapel[] = mapelRes.data || [];
 
-      const paketA = kelasData.filter((k) =>
-        (k.nama ?? k.nama_kelas ?? "").includes("Paket A")
+      const paketC = kelasData.filter((k) =>
+        (k.nama ?? k.nama_kelas ?? "").includes("Paket C")
       );
 
-      setKelasList(paketA);
+      setKelasList(paketC);
       setMapelList(mapelData);
 
       setRoutes([
         { key: "all", title: "Semua Murid" },
-        ...paketA.map((k) => ({
+        ...paketC.map((k) => ({
           key: String(k.id),
           title: k.nama ?? k.nama_kelas ?? `Kelas ${k.id}`,
         })),

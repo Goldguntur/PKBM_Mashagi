@@ -25,10 +25,10 @@ const GuruHome = () => {
     { id: 2, title: "Laporan Absensi Guru Dan Tenaga Pendidik", description: "Laporan Absensi Khusus Guru Dan Tenaga Pendidik", route: "../(pages)/LaporanAbsensiGuruTendik", icon: <Ionicons name="document-text" size={28} color="#16a34a" /> },
     { id: 3, title: "Absensi Murid A", description: "Absensi Murid Paket A", route: "../(pages)/AbsensiMuridA", icon: <Ionicons name="checkmark-done" size={28} color="#2563eb" /> },
     { id: 4, title: "Laporan Absensi Murid A", description: "Laporan Absensi Murid Paket A", route: "../(pages)/LaporanAbsensiMuridA", icon: <Ionicons name="document-text" size={28} color="#16a34a" /> },
-    { id: 5, title: "Absensi Murid B", description: "Absensi Murid Paket B", route: "../(pages)/AbsensiMurid", icon: <Ionicons name="checkmark-circle" size={28} color="#9333ea" /> },
-    { id: 6, title: "Laporan Absensi Murid B", description: "Laporan Absensi Murid Paket B", route: "../(pages)/LaporanAbsensiMurid", icon: <Ionicons name="document" size={28} color="#f97316" /> },
-    { id: 7, title: "Absensi Murid C", description: "Absensi Murid Paket C", route: "../(pages)/AbsensiMurid", icon: <Ionicons name="people" size={28} color="#06b6d4" /> },
-    { id: 8, title: "Laporan Absensi Murid C", description: "Laporan Absensi Murid Paket C", route: "../(pages)/LaporanAbsensiMurid", icon: <Ionicons name="document-attach" size={28} color="#ef4444" /> },
+    { id: 5, title: "Absensi Murid B", description: "Absensi Murid Paket B", route: "../(pages)/AbsensiMuridB", icon: <Ionicons name="checkmark-circle" size={28} color="#9333ea" /> },
+    { id: 6, title: "Laporan Absensi Murid B", description: "Laporan Absensi Murid Paket B", route: "../(pages)/LaporanAbsensiMuridB", icon: <Ionicons name="document" size={28} color="#f97316" /> },
+    { id: 7, title: "Absensi Murid C", description: "Absensi Murid Paket C", route: "../(pages)/AbsensiMuridC", icon: <Ionicons name="people" size={28} color="#06b6d4" /> },
+    { id: 8, title: "Laporan Absensi Murid C", description: "Laporan Absensi Murid Paket C", route: "../(pages)/LaporanAbsensiMuridC", icon: <Ionicons name="document-attach" size={28} color="#ef4444" /> },
   ];
 
   const cards_C = [
